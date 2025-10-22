@@ -71,7 +71,7 @@ export default function Home() {
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/signup" className="px-6 py-3 rounded font-semibold shadow" style={{ backgroundColor: "var(--accent)", color: "#000" }}>
+              <Link to="/draw" className="px-6 py-3 rounded font-semibold shadow" style={{ backgroundColor: "var(--accent)", color: "#000" }}>
                 ENTER THE DRAW NOW
               </Link>
               <Link to="/draw" className="px-5 py-3 rounded border border-zinc-700 text-zinc-300">View Draw Details</Link>
