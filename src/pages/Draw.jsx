@@ -176,6 +176,21 @@ export default function Draw() {
             </div>
           </div>
         )}
+
+        {/* Mobile sticky CTA (visible on small screens) */}
+        <div className="lg:hidden fixed inset-x-0 bottom-4 px-4 z-50">
+          <div className="max-w-3xl mx-auto">
+            <button
+              onClick={() => setBookingOpen(true)}
+              className="w-full py-3 rounded-xl font-semibold shadow-lg flex items-center justify-center gap-3"
+              style={{ backgroundColor: "var(--accent)", color: "#000" }}
+              aria-label="Book ticket"
+            >
+              <span className="text-sm">BOOK NOW</span>
+              <span className="text-sm font-mono">{draw?.ticketPrice ? `₹${draw.ticketPrice}` : 'Free'}</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
