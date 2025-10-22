@@ -14,6 +14,13 @@
   100% { transform: translateX(-50%); }
 }
 
+/* small utility animations used by Landing */
+.animate-fade-in { animation: fadeIn 1s ease both; }
+.animate-zoom-in { animation: zoomIn 1s ease both; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes zoomIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
 body {
   @apply bg-gray-50 text-gray-800;
 }

@@ -60,8 +60,9 @@ export default function App() {
         <ErrorBoundary>
           <Suspense fallback={<div className="text-center text-zinc-400">Loading...</div>}>
             <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/home" element={<Home />} />
               <Route path="/landing" element={<Landing />} />
-              <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/draw" element={<Draw />} />
               <Route path="/gallery" element={<Gallery />} />
