@@ -12,6 +12,7 @@ const Gallery = lazy(() => import("./pages/Gallery"));
 const Contact = lazy(() => import("./pages/Contact"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 const AdminPanel = lazy(() => import("./pages/AdminPanel"));
+const Landing = lazy(() => import("./pages/Landing"));
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -59,6 +60,7 @@ export default function App() {
         <ErrorBoundary>
           <Suspense fallback={<div className="text-center text-zinc-400">Loading...</div>}>
             <Routes>
+              <Route path="/landing" element={<Landing />} />
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/draw" element={<Draw />} />
