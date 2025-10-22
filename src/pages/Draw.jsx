@@ -94,7 +94,7 @@ export default function Draw() {
           <div className="col-span-2 bg-zinc-900 rounded-lg p-6 border border-zinc-800">
             {promoVisible && (
               <div className="mb-4 p-3 rounded-lg bg-amber-400 text-black font-semibold text-center">
-                {promoText} — Limited slots remaining. Book now!
+                {promoSoldDisplay} tickets sold — Limited slots remaining. Book now!
               </div>
             )}
               <div className="flex items-center justify-between">
