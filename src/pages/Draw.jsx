@@ -154,7 +154,7 @@ export default function Draw() {
           <div className="bg-zinc-900 rounded-lg p-4 border border-zinc-800">
             <div className="flex items-center justify-between">
               <h4 className="font-semibold" style={{ color: "var(--accent)" }}>Recent Bookings</h4>
-              <div className="text-xs text-zinc-400">{tickets.length} entries</div>
+              <div className="text-xs text-zinc-400">{promoVisible ? "Unlimited tickets — continue booking" : `${tickets.length} entries`}</div>
             </div>
 
             <div className="mt-3 max-h-56 sm:max-h-48 overflow-auto">
@@ -173,7 +173,7 @@ export default function Draw() {
                   ))}
                 </ul>
               ) : (
-                <div className="text-sm text-zinc-400 p-4 rounded border border-zinc-800">No tickets yet. Be the first to book!</div>
+                <div className="text-sm text-zinc-400 p-4 rounded border border-zinc-800">No tickets yet. Tickets are unlimited — be the first to book!</div>
               )}
             </div>
 
