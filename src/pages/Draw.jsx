@@ -32,6 +32,15 @@ export default function Draw() {
 
   useEffect(() => { load(); }, []);
 
+  // Prevent background scroll when booking modal is open (mobile UX)
+  useEffect(() => {
+    if (bookingOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [bookingOpen]);
+
   function handleBooked(res) {
     // res: { id, ticketNumber }
     setConfirmed(res);
@@ -116,7 +125,7 @@ export default function Draw() {
   return (
     <div className="min-h-screen bg-black text-gray-100">
   {/* add extra bottom padding so sticky CTA doesn't cover content on mobile */}
-  <div className="container mx-auto px-4 py-8 lg:py-12 space-y-8 pb-28 lg:pb-12">
+  <div className="container mx-auto px-4 py-8 lg:py-12 space-y-8 pb-36 lg:pb-12">
 
         {/* Hero / Draw Summary */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
@@ -274,11 +283,23 @@ export default function Draw() {
         {/* Booking Modal */}
         {bookingOpen && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-2 z-50">
-            <div className="w-full h-full lg:h-auto lg:w-full lg:max-w-xl bg-zinc-900 rounded-none lg:rounded-lg p-4 lg:p-6 border border-zinc-800 overflow-auto">
+            <div className="w-full h-full lg:h-auto lg:w-full lg:max-w-xl bg-zinc-900 rounded-none lg:rounded-lg p-4 lg:p-6 border border-zinc-800 overflow-auto relative">
+              {/* Absolute close button for mobile (bigger touch target) */}
+              <button
+                onClick={() => setBookingOpen(false)}
+                aria-label="Close booking"
+                className="absolute right-3 top-3 bg-black/50 text-zinc-200 rounded-full p-2 hover:bg-black/60"
+                style={{ zIndex: 60 }}
+              >
+                Close
+              </button>
+
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold" style={{ color: "var(--accent)" }}>Book Ticket</h3>
-                <button onClick={() => setBookingOpen(false)} className="text-zinc-400">Close</button>
+                {/* keep the visual header spacing for large screens */}
+                <div className="hidden lg:block" />
               </div>
+
               <div className="mt-4">
                 <TicketForm drawId={draw?.id} onBooked={handleBooked} />
               </div>
@@ -287,7 +308,7 @@ export default function Draw() {
         )}
 
         {/* Mobile sticky CTA (visible on small screens) */}
-        <div className="lg:hidden fixed inset-x-0 bottom-4 px-4 z-50">
+        <div className="lg:hidden fixed inset-x-0 bottom-4 px-4 z-40">
           <div className="max-w-3xl mx-auto">
             <button
               onClick={() => setBookingOpen(true)}
