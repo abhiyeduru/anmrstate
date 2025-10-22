@@ -47,6 +47,33 @@ export default function Draw() {
   const promoSoldNumber = 500; // used to compute a promo percentage when total is available
   const promoSoldDisplay = "500+"; // displayed text for sold
 
+  // helper: mask phone numbers to +91 9182xxxxxx style
+  function maskPhone(phone) {
+    if (!phone) return "";
+    // extract digits
+    const digits = String(phone).replace(/\D/g, "");
+    // if starts with country code '91' or has 10 digits, prefer last 10
+    const last10 = digits.length >= 10 ? digits.slice(digits.length - 10) : digits;
+    const first4 = last10.slice(0, 4) || last10;
+    return `+91 ${first4}xxxxxx`;
+  }
+
+  // promo dummy recent bookings (shows masked phones)
+  const promoBookings = [
+    { id: 'p1', ticketNumber: 'LUCKY-1311', name: 'Yeduru Chiranjeevi Reddy', phone: '91827661111', createdAt: { seconds: Math.floor(Date.now() / 1000) - 60 * 60 } },
+    { id: 'p2', ticketNumber: 'LUCKY-0870', name: 'Yeduru Abhiram', phone: '9182146476', createdAt: { seconds: Math.floor(Date.now() / 1000) - 70 * 60 } },
+    { id: 'p3', ticketNumber: 'LUCKY-1127', name: 'Abhi', phone: '91234567890', createdAt: { seconds: Math.floor(Date.now() / 1000) - 6 * 60 * 60 } },
+    { id: 'p4', ticketNumber: 'LUCKY-0002', name: 'Guest User', phone: '919876543210', createdAt: { seconds: Math.floor(Date.now() / 1000) - 24 * 60 * 60 } },
+    { id: 'p5', ticketNumber: 'LUCKY-0001', name: 'A', phone: '919999888777', createdAt: { seconds: Math.floor(Date.now() / 1000) - 2 * 24 * 60 * 60 } }
+  ];
+
+  function formatDate(createdAt) {
+    if (!createdAt) return "-";
+    if (createdAt.seconds) return new Date(createdAt.seconds * 1000).toLocaleString();
+    if (createdAt.toDate) return createdAt.toDate().toLocaleString();
+    try { return new Date(createdAt).toLocaleString(); } catch (e) { return String(createdAt); }
+  }
+
   return (
     <div className="min-h-screen bg-black text-gray-100">
   {/* add extra bottom padding so sticky CTA doesn't cover content on mobile */}
@@ -158,22 +185,38 @@ export default function Draw() {
             </div>
 
             <div className="mt-3 max-h-56 sm:max-h-48 overflow-auto">
-              {tickets.length ? (
+              {promoVisible ? (
                 <ul className="space-y-3">
-                  {tickets.slice().reverse().map(t => (
+                  {promoBookings.map(t => (
                     <li key={t.id} className="p-2 sm:p-3 rounded border border-zinc-800 bg-black/30">
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="text-sm font-mono" style={{ color: "var(--accent)" }}>{t.ticketNumber}</div>
-                          <div className="text-xs text-zinc-400">{t.name} • {t.phone}</div>
+                          <div className="text-xs text-zinc-400">{t.name} • {maskPhone(t.phone)}</div>
                         </div>
-                        <div className="text-xs text-zinc-400">{t.createdAt ? new Date(t.createdAt.seconds * 1000).toLocaleString() : "-"}</div>
+                        <div className="text-xs text-zinc-400">{formatDate(t.createdAt)}</div>
                       </div>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <div className="text-sm text-zinc-400 p-4 rounded border border-zinc-800">No tickets yet. Tickets are unlimited — be the first to book!</div>
+                tickets.length ? (
+                  <ul className="space-y-3">
+                    {tickets.slice().reverse().map(t => (
+                      <li key={t.id} className="p-2 sm:p-3 rounded border border-zinc-800 bg-black/30">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="text-sm font-mono" style={{ color: "var(--accent)" }}>{t.ticketNumber}</div>
+                            <div className="text-xs text-zinc-400">{t.name} • {maskPhone(t.phone)}</div>
+                          </div>
+                          <div className="text-xs text-zinc-400">{t.createdAt ? new Date(t.createdAt.seconds * 1000).toLocaleString() : "-"}</div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="text-sm text-zinc-400 p-4 rounded border border-zinc-800">No tickets yet. Tickets are unlimited — be the first to book!</div>
+                )
               )}
             </div>
 
