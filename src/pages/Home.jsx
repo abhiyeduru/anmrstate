@@ -101,7 +101,7 @@ export default function Home() {
           </div>
 
           <div className="rounded-lg overflow-hidden border border-zinc-800 bg-zinc-900 p-4">
-            <img src="https://images.unsplash.com/photo-1505691723518-36a6f5f1b8a2?auto=format&fit=crop&w=900&q=60" alt="masterplan" className="w-full h-64 object-cover rounded" />
+            <img src="https://picsum.photos/900/600?random=1" alt="masterplan" className="w-full h-64 object-cover rounded" />
             <div className="mt-4 p-4 bg-zinc-800 rounded border-l-4" style={{ borderColor: "var(--accent)" }}>
               <div className="text-sm text-zinc-400">Next Draw</div>
               <div className="text-lg font-semibold" style={{ color: "var(--accent)" }}>{nextDraw?.title || "Grand Land Draw"}</div>

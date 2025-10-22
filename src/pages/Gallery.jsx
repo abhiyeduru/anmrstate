@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 
 export default function Gallery() {
   const images = [
-    { src: "https://images.unsplash.com/photo-1560184897-6c0b8f4f0aef?auto=format&fit=crop&w=1600&q=60", caption: "Premium Plot — Akashalokoram" },
-    { src: "https://images.unsplash.com/photo-1572120360610-d971b9b1a4ad?auto=format&fit=crop&w=1600&q=60", caption: "Handover Moment — Past Winner" },
-    { src: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1600&q=60", caption: "Site Office" },
-    { src: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1600&q=60", caption: "Community View" },
-    { src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=60", caption: "Masterplan Overview" },
-    { src: "https://images.unsplash.com/photo-1549187774-b4e9b0445b1e?auto=format&fit=crop&w=1600&q=60", caption: "Office Interior" }
+    { src: "https://picsum.photos/1600/900?random=20", caption: "Premium Plot — Akashalokoram" },
+    { src: "https://picsum.photos/1600/900?random=21", caption: "Handover Moment — Past Winner" },
+    { src: "https://picsum.photos/1600/900?random=22", caption: "Site Office" },
+    { src: "https://picsum.photos/1600/900?random=23", caption: "Community View" },
+    { src: "https://picsum.photos/1600/900?random=24", caption: "Masterplan Overview" },
+    { src: "https://picsum.photos/1600/900?random=25", caption: "Office Interior" }
   ];
 
   const [active, setActive] = useState(null);
@@ -106,9 +106,9 @@ export default function Gallery() {
           <p className="mt-3 text-zinc-300">We publish winner photos, documentation and handover events to ensure complete transparency.</p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
-            <img src="https://via.placeholder.com/120x36?text=Trust" alt="trust" className="h-8 object-contain" />
-            <img src="https://via.placeholder.com/120x36?text=Media" alt="media" className="h-8 object-contain" />
-            <img src="https://via.placeholder.com/120x36?text=Cert" alt="cert" className="h-8 object-contain" />
+            <img src="https://picsum.photos/120/36?random=30" alt="trust" className="h-8 object-contain" />
+            <img src="https://picsum.photos/120/36?random=31" alt="media" className="h-8 object-contain" />
+            <img src="https://picsum.photos/120/36?random=32" alt="cert" className="h-8 object-contain" />
           </div>
 
           <div className="mt-6">

@@ -31,7 +31,7 @@ export default function About() {
 
           <div className="rounded-lg overflow-hidden border border-zinc-800 bg-zinc-900 p-4">
             <img
-              src="https://images.unsplash.com/photo-1505691723518-36a6f5f1b8a2?auto=format&fit=crop&w=900&q=60"
+              src="https://picsum.photos/900/600?random=2"
               alt="Akashalokoram masterplan"
               className="w-full h-64 object-cover rounded"
             />
@@ -144,9 +144,9 @@ export default function About() {
             </div>
 
             <div className="mt-6 flex items-center justify-center gap-6">
-              <img src="https://via.placeholder.com/100x40?text=Trust" alt="trust" className="h-8 object-contain"/>
-              <img src="https://via.placeholder.com/100x40?text=Media" alt="media" className="h-8 object-contain"/>
-              <img src="https://via.placeholder.com/100x40?text=Cert" alt="cert" className="h-8 object-contain"/>
+              <img src="https://picsum.photos/120/40?random=10" alt="trust" className="h-8 object-contain"/>
+              <img src="https://picsum.photos/120/40?random=11" alt="media" className="h-8 object-contain"/>
+              <img src="https://picsum.photos/120/40?random=12" alt="cert" className="h-8 object-contain"/>
             </div>
           </div>
         </section>
