@@ -45,7 +45,8 @@ export default function Draw() {
 
   return (
     <div className="min-h-screen bg-black text-gray-100">
-      <div className="container mx-auto px-4 py-12 space-y-8">
+  {/* add extra bottom padding so sticky CTA doesn't cover content on mobile */}
+  <div className="container mx-auto px-4 py-8 lg:py-12 space-y-8 pb-28 lg:pb-12">
 
         {/* Hero / Draw Summary */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
@@ -74,11 +75,12 @@ export default function Draw() {
 
               <button
                 onClick={() => setBookingOpen(true)}
-                className="ml-2 px-5 py-3 rounded font-semibold shadow"
+                className="ml-2 hidden sm:inline-block px-5 py-3 rounded font-semibold shadow"
                 style={{ backgroundColor: "var(--accent)", color: "#000" }}
               >
                 BOOK YOUR TICKET NOW
               </button>
+              {/* on very small screens, use the sticky CTA instead */}
             </div>
           </div>
         </div>
@@ -131,11 +133,11 @@ export default function Draw() {
               <div className="text-xs text-zinc-400">{tickets.length} entries</div>
             </div>
 
-            <div className="mt-3 max-h-56 overflow-auto">
+            <div className="mt-3 max-h-56 sm:max-h-48 overflow-auto">
               {tickets.length ? (
                 <ul className="space-y-3">
                   {tickets.slice().reverse().map(t => (
-                    <li key={t.id} className="p-3 rounded border border-zinc-800 bg-black/30">
+                    <li key={t.id} className="p-2 sm:p-3 rounded border border-zinc-800 bg-black/30">
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="text-sm font-mono" style={{ color: "var(--accent)" }}>{t.ticketNumber}</div>
@@ -164,8 +166,8 @@ export default function Draw() {
 
         {/* Booking Modal */}
         {bookingOpen && (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-            <div className="w-full max-w-xl bg-zinc-900 rounded-lg p-6 border border-zinc-800">
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-2 z-50">
+            <div className="w-full h-full lg:h-auto lg:w-full lg:max-w-xl bg-zinc-900 rounded-none lg:rounded-lg p-4 lg:p-6 border border-zinc-800 overflow-auto">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold" style={{ color: "var(--accent)" }}>Book Ticket</h3>
                 <button onClick={() => setBookingOpen(false)} className="text-zinc-400">Close</button>
