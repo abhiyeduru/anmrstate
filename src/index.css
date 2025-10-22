@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Marquee animation for announcement banner */
+.animate-marquee {
+  display: inline-block;
+  will-change: transform;
+  animation: marquee 18s linear infinite;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
 body {
   @apply bg-gray-50 text-gray-800;
 }

@@ -41,6 +41,23 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-gray-100">
       <div className="container mx-auto px-4 py-12 space-y-12">
+        {/* Marquee / Announcement banner */}
+        <div className="w-full overflow-hidden">
+          <div className="bg-amber-500 text-black px-4 py-2 rounded-lg mb-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <div className="sr-only">Announcement</div>
+                <div className="whitespace-nowrap animate-marquee">
+                  <strong>Upcoming Draw — December 31, 2025:</strong>
+                  &nbsp;The ANM Grand Land Draw will be held on December 31, 2025. Book your ticket now to participate and win a premium residential plot!
+                </div>
+              </div>
+              <div className="flex-shrink-0">
+                <Link to="/draw" className="px-4 py-2 rounded font-semibold bg-black text-amber-300">Book Ticket Now</Link>
+              </div>
+            </div>
+          </div>
+        </div>
         {/* HERO */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           <div>
