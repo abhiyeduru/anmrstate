@@ -42,6 +42,9 @@ export default function Draw() {
   const sold = draw ? (draw.ticketsSold || tickets.length || 0) : 0;
   const total = draw ? (draw.totalTickets || null) : null;
   const pct = total ? Math.min(100, Math.round((sold / total) * 100)) : null;
+  // promotional display: show 500+ tickets sold for attraction
+  const promoVisible = true;
+  const promoText = "500+ tickets sold";
 
   return (
     <div className="min-h-screen bg-black text-gray-100">
@@ -88,6 +91,11 @@ export default function Draw() {
         {/* Stats & Booking */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="col-span-2 bg-zinc-900 rounded-lg p-6 border border-zinc-800">
+            {promoVisible && (
+              <div className="mb-4 p-3 rounded-lg bg-amber-400 text-black font-semibold text-center">
+                {promoText} — Limited slots remaining. Book now!
+              </div>
+            )}
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm text-zinc-400">Total Sold</div>
