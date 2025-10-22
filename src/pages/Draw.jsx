@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Countdown from "../components/Countdown";
 import TicketForm from "../components/TicketForm";
 import TicketModal from "../components/TicketModal";
@@ -58,14 +58,53 @@ export default function Draw() {
     return `+91 ${first4}xxxxxx`;
   }
 
-  // promo dummy recent bookings (shows masked phones)
-  const promoBookings = [
-    { id: 'p1', ticketNumber: 'LUCKY-1311', name: 'Yeduru Chiranjeevi Reddy', phone: '91827661111', createdAt: { seconds: Math.floor(Date.now() / 1000) - 60 * 60 } },
-    { id: 'p2', ticketNumber: 'LUCKY-0870', name: 'Yeduru Abhiram', phone: '9182146476', createdAt: { seconds: Math.floor(Date.now() / 1000) - 70 * 60 } },
-    { id: 'p3', ticketNumber: 'LUCKY-1127', name: 'Abhi', phone: '91234567890', createdAt: { seconds: Math.floor(Date.now() / 1000) - 6 * 60 * 60 } },
-    { id: 'p4', ticketNumber: 'LUCKY-0002', name: 'Guest User', phone: '919876543210', createdAt: { seconds: Math.floor(Date.now() / 1000) - 24 * 60 * 60 } },
-    { id: 'p5', ticketNumber: 'LUCKY-0001', name: 'A', phone: '919999888777', createdAt: { seconds: Math.floor(Date.now() / 1000) - 2 * 24 * 60 * 60 } }
-  ];
+  // promo dummy recent bookings (generated list shows masked phones and short messages)
+  const promoBookings = useMemo(() => {
+    // small name pools to create realistic Indian names
+    const first = ["Aarav","Vivaan","Aditya","Vihaan","Sai","Arjun","Rohan","Kabir","Ishaan","Krishna","Ananya","Saanvi","Priya","Sakshi","Neha","Pooja","Riya","Sneha","Kumar","Reddy","Singh","Patel","Kumar","Sharma","Das"];
+    const last = ["Reddy","Kumar","Singh","Patel","Sharma","Das","Gupta","Iyer","Nair","Menon","Verma","Choudhary","Khan","Rao","Joshi","Mehta","Bose","Kapoor","Gowda","Naik"];
+    const messages = [
+      "Booked 2 tickets, excited!",
+      "Hope to win this time.",
+      "Paid via UPI.",
+      "Booking for family.",
+      "Thanks ANM Real Estate!",
+      "Double checked details.",
+      "One ticket, fingers crossed.",
+      "Booked quickly.",
+      "Doing this for my parents.",
+      "Happy to support the project."
+    ];
+
+    // target date range for createdAt: 2025-09-09 -> 2025-10-23 (inclusive)
+    const start = new Date('2025-09-09T00:00:00Z').getTime();
+    const end = new Date('2025-10-23T23:59:59Z').getTime();
+    const range = end - start;
+
+    const list = new Array(500).fill(0).map((_, i) => {
+      const f = first[(i * 7) % first.length];
+      const l = last[(i * 13) % last.length];
+      const name = `${f} ${l}`;
+      const phone = `91${Math.floor(7000000000 + ((i * 991) % 3000000000))}`; // generate varied 10- or 12-digit-ish numbers
+      const ticketNumber = `LUCKY-${(1000 + i).toString().slice(-4)}`;
+      const msg = messages[i % messages.length];
+
+      // distribute timestamps uniformly across the date range
+      const t = start + Math.floor((i / 499) * range) + (i % 60) * 1000;
+      const seconds = Math.floor(t / 1000);
+
+      return {
+        id: `promo-${i}`,
+        ticketNumber,
+        name,
+        phone,
+        message: msg,
+        createdAt: { seconds }
+      };
+    });
+
+    return list.reverse(); // newest first
+  }, []);
 
   function formatDate(createdAt) {
     if (!createdAt) return "-";
@@ -193,6 +232,7 @@ export default function Draw() {
                         <div>
                           <div className="text-sm font-mono" style={{ color: "var(--accent)" }}>{t.ticketNumber}</div>
                           <div className="text-xs text-zinc-400">{t.name} • {maskPhone(t.phone)}</div>
+                          {t.message && <div className="text-xs text-zinc-300 mt-1">{t.message}</div>}
                         </div>
                         <div className="text-xs text-zinc-400">{formatDate(t.createdAt)}</div>
                       </div>
