@@ -42,9 +42,10 @@ export default function Draw() {
   const sold = draw ? (draw.ticketsSold || tickets.length || 0) : 0;
   const total = draw ? (draw.totalTickets || null) : null;
   const pct = total ? Math.min(100, Math.round((sold / total) * 100)) : null;
-  // promotional display: show 500+ tickets sold for attraction
-  const promoVisible = true;
-  const promoText = "500+ tickets sold";
+  // promotional mode: show dummy numbers for attraction instead of real stats
+  const promoVisible = true; // flip to false to show real numbers again
+  const promoSoldNumber = 500; // used to compute a promo percentage when total is available
+  const promoSoldDisplay = "500+"; // displayed text for sold
 
   return (
     <div className="min-h-screen bg-black text-gray-100">
@@ -96,29 +97,44 @@ export default function Draw() {
                 {promoText} — Limited slots remaining. Book now!
               </div>
             )}
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-sm text-zinc-400">Total Sold</div>
-                <div className="text-2xl font-bold" style={{ color: "var(--accent)" }}>{sold}</div>
-              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-sm text-zinc-400">Total Sold</div>
+                  <div className="text-2xl font-bold" style={{ color: "var(--accent)" }}>
+                    {promoVisible ? promoSoldDisplay : sold}
+                  </div>
+                </div>
 
-              <div>
-                <div className="text-sm text-zinc-400">Available Slots</div>
-                <div className="text-lg font-semibold text-zinc-100">{total ? Math.max(0, total - sold) : "Unlimited"}</div>
+                <div>
+                  <div className="text-sm text-zinc-400">Available Slots</div>
+                  <div className="text-lg font-semibold text-zinc-100">
+                    {promoVisible ? (total ? Math.max(0, total - promoSoldNumber) : "Limited") : (total ? Math.max(0, total - sold) : "Unlimited")}
+                  </div>
+                </div>
               </div>
-            </div>
 
             <div className="mt-6">
               <div className="w-full bg-zinc-800 rounded h-3 overflow-hidden border border-zinc-700">
                 <div
                   className="h-3"
                   style={{
-                    width: pct ? `${pct}%` : (sold ? "100%" : "0%"),
+                    width: (() => {
+                      if (promoVisible) {
+                        if (total) return `${Math.min(100, Math.round((promoSoldNumber / total) * 100))}%`;
+                        return `50%`;
+                      }
+                      if (pct) return `${pct}%`;
+                      return sold ? "100%" : "0%";
+                    })(),
                     background: "linear-gradient(90deg, rgba(212,175,55,1), rgba(255,215,0,1))"
                   }}
                 />
               </div>
-              <div className="mt-2 text-xs text-zinc-400">{total ? `${pct}% filled (${sold}/${total})` : `${sold} tickets sold`}</div>
+              <div className="mt-2 text-xs text-zinc-400">{
+                total
+                  ? `${promoVisible ? Math.min(100, Math.round((promoSoldNumber / total) * 100)) : pct}% filled (${promoVisible ? promoSoldDisplay : sold}/${total})`
+                  : `${promoVisible ? `${promoSoldDisplay} tickets sold` : `${sold} tickets sold`}`
+              }</div>
             </div>
 
             {/* Booking Form Inline (visible on wide screens) */}
