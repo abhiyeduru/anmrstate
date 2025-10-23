@@ -39,9 +39,13 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
-    // Internal ticket number reservations should be admin-managed only.
+    // Internal ticket number reservations:
+    // - allow public create so anonymous users can reserve a number during purchase
+    // - only admins may update or delete reservations
     match /ticketNumbers/{num} {
-      allow read, write: if isAdmin();
+      allow read: if true;
+      allow create: if true; // allow reservation creation by any user (used by client transaction)
+      allow update, delete: if isAdmin();
     }
 
     // Fallback: allow public reads for any other documents, but only
