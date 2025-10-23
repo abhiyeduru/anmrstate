@@ -18,6 +18,7 @@ export default function AdminPanel() {
   const [drawMap, setDrawMap] = useState({});
   const [creating, setCreating] = useState({ title: "", prize: "", date: "", ticketPrice: "", totalTickets: "" });
   const [loading, setLoading] = useState(true);
+  const [deletingTicketId, setDeletingTicketId] = useState(null);
 
   // UI state
   const [activeTab, setActiveTab] = useState("overview"); // overview | draws | tickets | messages
@@ -115,7 +116,7 @@ export default function AdminPanel() {
   const filteredTickets = (activeTab === "tickets" ? allTickets : tickets).filter(t => {
     if (!ticketSearch) return true;
     const s = ticketSearch.toLowerCase();
-    return (t.name || "").toLowerCase().includes(s) || (t.email || "").toLowerCase().includes(s) || (t.ticketNumber || "").toLowerCase().includes(s);
+    return (t.name || "").toLowerCase().includes(s) || (t.adhar || "").toLowerCase().includes(s) || (t.ticketNumber || "").toLowerCase().includes(s);
   });
 
   return (
@@ -241,7 +242,7 @@ export default function AdminPanel() {
                 <div className="flex items-center justify-between">
                   <h3 className="text-xl font-semibold" style={{ color: "var(--accent)" }}>Tickets</h3>
                   <div className="flex items-center gap-3">
-                    <input placeholder="Search name, email, ticket" value={ticketSearch} onChange={e => setTicketSearch(e.target.value)} className="px-3 py-2 rounded bg-black/20 border border-zinc-800 text-sm" />
+                    <input placeholder="Search name, Aadhaar, ticket" value={ticketSearch} onChange={e => setTicketSearch(e.target.value)} className="px-3 py-2 rounded bg-black/20 border border-zinc-800 text-sm" />
                     <button onClick={() => downloadCSV(filteredTickets, "filtered-tickets")} className="px-3 py-2 rounded border" style={{ borderColor: "var(--accent)", color: "var(--accent)" }}>Export</button>
                   </div>
                 </div>
@@ -252,7 +253,7 @@ export default function AdminPanel() {
                       <tr className="text-left border-b">
                         <th className="p-2">Ticket</th>
                         <th className="p-2">Name</th>
-                        <th className="p-2">Email</th>
+                        <th className="p-2">Aadhaar</th>
                         <th className="p-2">Phone</th>
                         <th className="p-2">Draw</th>
                         <th className="p-2">Status</th>
@@ -265,13 +266,36 @@ export default function AdminPanel() {
                         <tr key={t.id} className="border-b">
                           <td className="p-2 font-mono" style={{ color: "var(--accent)" }}>{t.ticketNumber}</td>
                           <td className="p-2">{t.name}</td>
-                          <td className="p-2">{t.email}</td>
+                          <td className="p-2">{t.adhar || "-"}</td>
                           <td className="p-2">{t.phone}</td>
                           <td className="p-2">{drawMap[t.drawId] || t.drawId}</td>
                           <td className="p-2">{t.status}</td>
                           <td className="p-2 text-xs text-zinc-400">{t.createdAt ? new Date(t.createdAt.seconds * 1000).toLocaleString() : "-"}</td>
                           <td className="p-2">
-                            <button onClick={() => markWinner(t.drawId, t.id).then(load)} className="px-2 py-1 rounded text-xs bg-red-600 text-white">Mark Winner</button>
+                            <div className="flex items-center gap-2">
+                              <button onClick={() => markWinner(t.drawId, t.id).then(load)} className="px-2 py-1 rounded text-xs bg-red-600 text-white">Mark Winner</button>
+                              <button disabled={deletingTicketId === t.id} onClick={async () => {
+                                const ok = window.confirm('Delete this ticket? This cannot be undone.');
+                                if (!ok) return;
+                                setDeletingTicketId(t.id);
+                                try {
+                                  const svc = await import('../services/firestoreService');
+                                  if (svc && typeof svc.deleteTicket === 'function') {
+                                    await svc.deleteTicket(t.id);
+                                    await load();
+                                  } else {
+                                    alert('Delete not available');
+                                  }
+                                } catch (err) {
+                                  console.error('Delete ticket failed', err);
+                                  // show a more descriptive message to help debugging
+                                  const msg = (err && err.message) ? err.message : String(err);
+                                  alert(`Failed to delete ticket: ${msg}`);
+                                } finally {
+                                  setDeletingTicketId(null);
+                                }
+                              }} className="px-2 py-1 rounded text-xs bg-red-800 text-white">{deletingTicketId === t.id ? 'Deleting…' : 'Delete'}</button>
+                            </div>
                           </td>
                         </tr>
                       ))}

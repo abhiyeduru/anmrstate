@@ -94,7 +94,7 @@ export async function createTicket(drawId, user) {
     tx.set(ticketRef, {
       drawId,
       name: user.name,
-      email: user.email,
+      adhar: user.adhar || user.email || null,
       phone: user.phone,
       userId: user.userId || null,
       ticketNumber,
@@ -143,11 +143,11 @@ export async function saveContact(contact) {
 
 export function exportTicketsToCSV(tickets) {
   if (!tickets || !tickets.length) return null;
-  const headers = ["Ticket Number", "Name", "Email", "Phone", "Status", "Created At"];
+  const headers = ["Ticket Number", "Name", "Aadhaar", "Phone", "Status", "Created At"];
   const rows = tickets.map(t => [
     t.ticketNumber,
     t.name,
-    t.email,
+    t.adhar || "",
     t.phone,
     t.status || "",
     t.createdAt ? new Date(t.createdAt.seconds * 1000).toISOString() : ""
@@ -160,6 +160,37 @@ export async function listAllTickets() {
   const q = query(collection(db, "tickets"), orderBy("createdAt", "desc"));
   const snap = await getDocs(q);
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+export async function deleteTicket(ticketId) {
+  if (!ticketId) throw new Error("ticketId required");
+  const ticketRef = doc(db, "tickets", ticketId);
+  await runTransaction(db, async (tx) => {
+    // All reads must happen before any writes in a Firestore transaction.
+    const tSnap = await tx.get(ticketRef);
+    if (!tSnap.exists()) throw new Error("Ticket not found");
+    const t = tSnap.data();
+
+    let drawSnap = null;
+    let drawRef = null;
+    if (t.drawId) {
+      drawRef = doc(db, "draws", t.drawId);
+      drawSnap = await tx.get(drawRef);
+    }
+
+    // Now perform writes (delete ticket, free number, update draw)
+    tx.delete(ticketRef);
+
+    if (t.number !== undefined && t.number !== null) {
+      const numRef = doc(db, "ticketNumbers", String(t.number));
+      tx.delete(numRef);
+    }
+
+    if (drawSnap && drawSnap.exists()) {
+      const current = drawSnap.data().ticketsSold || 0;
+      tx.update(drawRef, { ticketsSold: Math.max(0, current - 1) });
+    }
+  });
 }
 
 export async function deleteDraw(drawId) {

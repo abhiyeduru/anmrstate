@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { createTicket } from "../services/firestoreService";
 
 export default function TicketForm({ drawId, onBooked }) {
-  const [form, setForm] = useState({ name: "", email: "", phone: "" });
+  const [form, setForm] = useState({ name: "", adhar: "", phone: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -13,7 +13,7 @@ export default function TicketForm({ drawId, onBooked }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-    if (!form.name || !form.email || !form.phone) {
+    if (!form.name || !form.adhar || !form.phone) {
       setError("All fields required");
       return;
     }
@@ -25,12 +25,12 @@ export default function TicketForm({ drawId, onBooked }) {
         id: res.id,
         ticketNumber: res.ticketNumber,
         name: form.name,
-        email: form.email,
+        adhar: form.adhar,
         phone: form.phone,
         createdAt: new Date()
       };
       onBooked && onBooked(ticket);
-      setForm({ name: "", email: "", phone: "" });
+      setForm({ name: "", adhar: "", phone: "" });
     } catch (err) {
       console.error(err);
       setError(err.message || "Failed to book");
@@ -41,9 +41,9 @@ export default function TicketForm({ drawId, onBooked }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3 max-w-md">
-      <input name="name" value={form.name} onChange={handleChange} placeholder="Full name" className="w-full p-2 border rounded bg-black/20" />
-      <input name="email" value={form.email} onChange={handleChange} placeholder="Email" className="w-full p-2 border rounded bg-black/20" />
-      <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" className="w-full p-2 border rounded bg-black/20" />
+  <input name="name" value={form.name} onChange={handleChange} placeholder="Full name" className="w-full p-2 border rounded bg-black/20" />
+  <input name="adhar" value={form.adhar} onChange={handleChange} placeholder="Aadhaar number" className="w-full p-2 border rounded bg-black/20" />
+  <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" className="w-full p-2 border rounded bg-black/20" />
       {error && <div className="text-amber-300 text-sm">{error}</div>}
       <div>
         <button type="submit" disabled={loading} className="px-4 py-2 rounded font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>

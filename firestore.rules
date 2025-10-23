@@ -1,12 +1,55 @@
 rules_version = '2';
 service cloud.firestore {
+  // SECURITY NOTICE:
+  // These rules are intended to support a production-like workflow where
+  // administrators (users with a custom `admin` claim) can perform full
+  // CRUD operations, while public users can still create tickets and
+  // contact messages without authentication (so the public site can sell
+  // tickets and accept contact forms).
+  //
+  // IMPORTANT: You must set the `admin` custom claim on admin accounts
+  // (see instructions below) before relying on these rules. Do NOT leave
+  // public write access open in production except for the specific
+  // create-only paths below.
+
   match /databases/{database}/documents {
-    // For development:
-    // - allow reads for everyone (so public pages and draw listing work)
-    // - allow writes only for authenticated users
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Draws: public read, admin-only writes
+    match /draws/{drawId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Tickets: public read/listing, anyone may create (purchase). Only
+    // admins may update or delete tickets.
+    match /tickets/{ticketId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // Contacts/messages: allow unauthenticated create (contact form),
+    // but only admins may read/manage messages.
+    match /contacts/{contactId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Internal ticket number reservations should be admin-managed only.
+    match /ticketNumbers/{num} {
+      allow read, write: if isAdmin();
+    }
+
+    // Fallback: allow public reads for any other documents, but only
+    // admins may write. This keeps public pages working while protecting
+    // write operations globally.
     match /{document=**} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
   }
 }

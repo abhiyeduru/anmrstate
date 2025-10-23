@@ -123,9 +123,9 @@ export default function Draw() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-gray-100">
+    <div className="min-h-screen bg-black text-gray-100 overflow-x-hidden">
   {/* add extra bottom padding so sticky CTA doesn't cover content on mobile */}
-  <div className="container mx-auto px-4 py-8 lg:py-12 space-y-8 pb-36 lg:pb-12">
+  <div className="w-full max-w-screen-xl mx-auto px-4 py-8 lg:py-12 space-y-8 pb-36 lg:pb-12">
 
         {/* Hero / Draw Summary */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
@@ -143,22 +143,27 @@ export default function Draw() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-zinc-400 mr-2">Draw Date</div>
-              <div className="bg-zinc-800 px-4 py-2 rounded border border-zinc-700">
-                <div className="text-sm text-zinc-300">{draw && draw.date ? (draw.date.toDate ? draw.date.toDate().toLocaleString() : new Date(draw.date).toLocaleString()) : "Dec 31, 2025"}</div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
+              <div className="text-sm text-zinc-400">Draw Date</div>
+
+              <div className="bg-zinc-800 px-3 py-2 rounded border border-zinc-700 w-full sm:w-auto min-w-0">
+                <div className="text-sm text-zinc-300 truncate break-words">{draw && draw.date ? (draw.date.toDate ? draw.date.toDate().toLocaleString() : new Date(draw.date).toLocaleString()) : "Dec 31, 2025"}</div>
                 <div className="mt-2">
-                  <Countdown target={draw && draw.date ? (draw.date.toDate ? draw.date.toDate() : draw.date) : new Date("2025-12-31T00:00:00")} />
+                  <div className="text-sm">
+                    <Countdown target={draw && draw.date ? (draw.date.toDate ? draw.date.toDate() : draw.date) : new Date("2025-12-31T00:00:00")} />
+                  </div>
                 </div>
               </div>
 
-              <button
-                onClick={() => setBookingOpen(true)}
-                className="ml-2 hidden sm:inline-block px-5 py-3 rounded font-semibold shadow"
-                style={{ backgroundColor: "var(--accent)", color: "#000" }}
-              >
-                BOOK YOUR TICKET NOW
-              </button>
+              <div className="w-full sm:w-auto flex justify-end">
+                <button
+                  onClick={() => setBookingOpen(true)}
+                  className="ml-0 sm:ml-2 hidden sm:inline-block px-5 py-3 rounded font-semibold shadow"
+                  style={{ backgroundColor: "var(--accent)", color: "#000" }}
+                >
+                  BOOK YOUR TICKET NOW
+                </button>
+              </div>
               {/* on very small screens, use the sticky CTA instead */}
             </div>
           </div>
@@ -232,11 +237,11 @@ export default function Draw() {
               <div className="text-xs text-zinc-400">{promoVisible ? "Unlimited tickets — continue booking" : `${tickets.length} entries`}</div>
             </div>
 
-            <div className="mt-3 max-h-56 sm:max-h-48 overflow-auto">
+            <div className="mt-3 max-h-[45vh] sm:max-h-[40vh] overflow-auto">
               {promoVisible ? (
                 <ul className="space-y-3">
                   {promoBookings.map(t => (
-                    <li key={t.id} className="p-2 sm:p-3 rounded border border-zinc-800 bg-black/30">
+                    <li key={t.id} className="p-2 sm:p-3 rounded border border-zinc-800 bg-black/30 w-full">
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="text-sm font-mono" style={{ color: "var(--accent)" }}>{t.ticketNumber}</div>
@@ -283,7 +288,7 @@ export default function Draw() {
         {/* Booking Modal */}
         {bookingOpen && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-2 z-50">
-            <div className="w-full h-full lg:h-auto lg:w-full lg:max-w-xl bg-zinc-900 rounded-none lg:rounded-lg p-4 lg:p-6 border border-zinc-800 overflow-auto relative">
+            <div className="w-full h-full lg:h-auto lg:w-full lg:max-w-xl bg-zinc-900 rounded-none lg:rounded-lg p-4 lg:p-6 border border-zinc-800 overflow-auto relative max-h-screen mx-2">
               {/* Absolute close button for mobile (bigger touch target) */}
               <button
                 onClick={() => setBookingOpen(false)}
