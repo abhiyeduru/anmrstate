@@ -21,7 +21,18 @@ service cloud.firestore {
     // Draws: public read, admin-only writes
     match /draws/{drawId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      // allow full create/update/delete only for admins
+      allow create, delete: if isAdmin();
+
+      // allow a very narrow non-admin update: incrementing ticketsSold by 1
+      // This lets anonymous clients complete the purchase transaction which
+      // increments ticketsSold, but prevents arbitrary draw modifications.
+      allow update: if isAdmin() || (
+        // only ticketsSold field present in the request
+        request.resource.data.keys().hasOnly(['ticketsSold'])
+        // and it's exactly previous + 1
+        && request.resource.data.ticketsSold == ((resource.data.ticketsSold == null) ? 0 : resource.data.ticketsSold) + 1
+      );
     }
 
     // Tickets: public read/listing, anyone may create (purchase). Only

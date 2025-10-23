@@ -49,7 +49,7 @@ export async function createDraw(draw) {
 export async function createTicket(drawId, user) {
   const drawRef = doc(db, "draws", drawId);
   const ticketsCol = collection(db, "tickets");
-  const minNum = 151;
+  const minNum = 500;
   const maxNum = 2000;
 
   const result = await runTransaction(db, async (tx) => {
