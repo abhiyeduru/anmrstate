@@ -184,24 +184,14 @@ export default function Draw() {
                 <div className="hidden sm:inline-block ml-2">
                   <button
                     onClick={() => {
-                      // open PhonePe UPI intent with amount ₹999
+                      // use centralized helper to open PhonePe/UPI with fixed ₹999
                       try {
-                        const upiId = '7396761111-5@axl';
-                        const pn = encodeURIComponent('ANM Real Estate');
-                        const tn = encodeURIComponent('Ticket Payment');
-                        const am = encodeURIComponent('999');
-                        const phonepeIntent = `phonepe://pay?pa=${upiId}&pn=${pn}&am=${am}&tn=${tn}&cu=INR`;
-                        const upiIntent = `upi://pay?pa=${upiId}&pn=${pn}&am=${am}&tn=${tn}&cu=INR`;
-                        // Try PhonePe app first; if it fails, fallback to generic UPI intent
-                        window.location.href = phonepeIntent;
-                        setTimeout(() => {
-                          window.location.href = upiIntent;
-                        }, 800);
-                      } catch (err) {
-                        // fallback
-                        const upi = `upi://pay?pa=7396761111-5@axl&pn=ANM%20Real%20Estate&am=999&tn=Ticket%20Payment&cu=INR`;
-                        window.location.href = upi;
-                      }
+                        // Inform user and attempt to open PhonePe
+                        // small UX: brief visual cue
+                        // eslint-disable-next-line no-alert
+                        alert('Opening PhonePe/UPI to pay ₹999...');
+                      } catch (e) {}
+                      openPhonePeAmount(999);
                     }}
                     className="ml-2 px-4 py-2 rounded font-medium border text-sm"
                     style={{ borderColor: 'var(--accent)', color: 'var(--accent)' }}
