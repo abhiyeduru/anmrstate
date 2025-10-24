@@ -13,6 +13,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 const AdminPanel = lazy(() => import("./pages/AdminPanel"));
 const Landing = lazy(() => import("./pages/Landing"));
+const Prizes = lazy(() => import("./pages/Prizes"));
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -65,6 +66,7 @@ export default function App() {
               <Route path="/landing" element={<Landing />} />
               <Route path="/about" element={<About />} />
               <Route path="/draw" element={<Draw />} />
+              <Route path="/prizes" element={<Prizes />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/admin/login" element={<AdminLogin />} />

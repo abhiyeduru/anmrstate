@@ -4,11 +4,13 @@ import { jsPDF } from "jspdf";
 // Config: set your UPI ID here or via REACT_APP_UPI_ID env variable at build time.
 // Guard access to `process` for environments where it's undefined (E.g., some browsers or Vite setups).
 const maybeProcessEnv = (typeof process !== 'undefined' && process.env) ? process.env : (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env : {});
-const UPI_ID = maybeProcessEnv.REACT_APP_UPI_ID || maybeProcessEnv.VITE_UPI_ID || "7396761111-5@axl";
+const UPI_ID = maybeProcessEnv.REACT_APP_UPI_ID || maybeProcessEnv.VITE_UPI_ID || "73967611111@ybl";
 // Path where QR image should be placed (public folder): /assets/upi-qr.png
 const UPI_QR_PATH = "/assets/upi-qr.png";
+// Path where final logo should be placed (public folder): /assets/anm-logo.png
+const ANM_LOGO_PATH = "/assets/anm-logo.png";
 // Direct PhonePe number (user requested)
-const PHONEPE_NUMBER = "7196761111";
+const PHONEPE_NUMBER = "7396761111";
 
 export default function TicketModal({ ticket, onClose }) {
 	if (!ticket) return null;
@@ -33,9 +35,32 @@ export default function TicketModal({ ticket, onClose }) {
 		// Header
 		doc.setFillColor(...gold);
 		doc.rect(40, 40, 515, 70, "F"); // gold header bar
-		doc.setFontSize(22);
-		doc.setTextColor(0, 0, 0);
-		doc.text("ANM Real Estate", 60, 90);
+		// helper: fetch image as dataURL (used for logo and QR)
+		function fetchImageAsDataURL(url) {
+			return fetch(url)
+				.then(r => { if (!r.ok) throw new Error('Image not found'); return r.blob(); })
+				.then(blob => new Promise((resolve, reject) => {
+					const reader = new FileReader();
+					reader.onloadend = () => resolve(reader.result);
+					reader.onerror = reject;
+					reader.readAsDataURL(blob);
+				}));
+		}
+
+		// try to embed logo in header (from public assets)
+		try {
+			const logoData = await fetchImageAsDataURL(ANM_LOGO_PATH);
+			// determine image format from data URL
+			const mimeMatch = /^data:(image\/[^;]+);base64,/.exec(logoData);
+			const format = mimeMatch ? mimeMatch[1].split('/')[1].toUpperCase() : 'PNG';
+			// add image at top-left of header
+			try { doc.addImage(logoData, format, 46, 46, 60, 60); } catch (e) { console.warn('Failed to add logo to PDF', e); }
+		} catch (e) {
+			// fallback to text title if logo missing
+			doc.setFontSize(22);
+			doc.setTextColor(0, 0, 0);
+			doc.text("ANM Real Estate", 120, 90);
+		}
 
 		// Ticket Title
 		doc.setFontSize(14);
@@ -66,7 +91,7 @@ export default function TicketModal({ ticket, onClose }) {
 		y += lineHeight;
 
 		doc.setFont(undefined, "bold");
-		doc.text("Email:", leftX, y);
+		doc.text("Aadhaar:", leftX, y);
 		doc.setFont(undefined, "normal");
 		doc.text(ticket.adhar || "-", leftX + 120, y);
 		y += lineHeight;
@@ -87,8 +112,8 @@ export default function TicketModal({ ticket, onClose }) {
 		doc.setFontSize(11);
 		doc.setTextColor(...gold);
 		doc.text("Support:", leftX, y);
-		doc.setTextColor(...dark);
-		doc.text("7396761111", leftX + 70, y);
+	doc.setTextColor(...dark);
+	doc.text(PHONEPE_NUMBER, leftX + 70, y);
 		y += lineHeight;
 
 		// Payments block: UPI ID and QR
@@ -101,17 +126,6 @@ export default function TicketModal({ ticket, onClose }) {
 		y += lineHeight;
 
 		// Try to embed QR image if available at runtime (public folder). This requires fetching the image as dataURL.
-		function fetchImageAsDataURL(url) {
-			return fetch(url)
-				.then(r => { if (!r.ok) throw new Error('Image not found'); return r.blob(); })
-				.then(blob => new Promise((resolve, reject) => {
-					const reader = new FileReader();
-					reader.onloadend = () => resolve(reader.result);
-					reader.onerror = reject;
-					reader.readAsDataURL(blob);
-				}));
-		}
-
 			// add image if available; await it so PDF contains the QR before saving
 			const imgX = leftX + 300;
 			const imgY = y - lineHeight;
@@ -119,7 +133,9 @@ export default function TicketModal({ ticket, onClose }) {
 			let dataUrl = null;
 			try {
 				dataUrl = await fetchImageAsDataURL(UPI_QR_PATH);
-				try { doc.addImage(dataUrl, 'PNG', imgX, imgY, imgSize, imgSize); } catch (e) { console.warn('Failed to add QR to PDF', e); }
+				const mimeMatchQR = /^data:(image\/[^;]+);base64,/.exec(dataUrl);
+				const formatQR = mimeMatchQR ? mimeMatchQR[1].split('/')[1].toUpperCase() : 'PNG';
+				try { doc.addImage(dataUrl, formatQR, imgX, imgY, imgSize, imgSize); } catch (e) { console.warn('Failed to add QR to PDF', e); }
 			} catch (e) {
 				// ignore missing image
 			}

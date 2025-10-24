@@ -125,7 +125,7 @@ export default function Draw() {
   // Opens PhonePe (or UPI) intent with a preset amount (₹999) to simplify quick payments
   function openPhonePeAmount(amount = 999) {
     try {
-      const upiId = '7396761111-5@axl';
+      const upiId = '73967611111@ybl';
       const pn = encodeURIComponent('ANM Real Estate');
       const tn = encodeURIComponent('Ticket Payment');
       const am = encodeURIComponent(String(amount));
@@ -135,7 +135,7 @@ export default function Draw() {
       window.location.href = phonepeIntent;
       setTimeout(() => { window.location.href = upiIntent; }, 800);
     } catch (err) {
-      const upi = `upi://pay?pa=7396761111-5@axl&pn=ANM%20Real%20Estate&am=${amount}&tn=Ticket%20Payment&cu=INR`;
+      const upi = `upi://pay?pa=73967611111@ybl&pn=ANM%20Real%20Estate&am=${amount}&tn=Ticket%20Payment&cu=INR`;
       window.location.href = upi;
     }
   }

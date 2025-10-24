@@ -27,6 +27,7 @@ export default function AdminPanel() {
   const [ticketDateFilter, setTicketDateFilter] = useState(""); // yyyy-mm-dd
   const [ticketStartTime, setTicketStartTime] = useState(""); // HH:MM
   const [ticketEndTime, setTicketEndTime] = useState(""); // HH:MM
+  const [ticketStatusFilter, setTicketStatusFilter] = useState("all"); // all | paid | unpaid
 
   async function load() {
     setLoading(true);
@@ -117,7 +118,8 @@ export default function AdminPanel() {
     }
   }
 
-  const filteredTickets = (activeTab === "tickets" ? allTickets : tickets).filter(t => {
+  const baseList = (activeTab === "tickets" ? allTickets : tickets);
+  const filteredTickets = baseList.filter(t => {
     // search filter
     if (ticketSearch) {
       const s = ticketSearch.toLowerCase();
@@ -152,6 +154,12 @@ export default function AdminPanel() {
         if (minutes > endMin) return false;
       }
     }
+    // status filter: paid / unpaid
+    if (ticketStatusFilter === 'paid') {
+      if (!t.paid) return false;
+    } else if (ticketStatusFilter === 'unpaid') {
+      if (t.paid) return false;
+    }
 
     return true;
   });
@@ -175,7 +183,9 @@ export default function AdminPanel() {
             <nav className="space-y-2">
               <button onClick={() => setActiveTab("overview")} className={`w-full text-left px-3 py-2 rounded ${activeTab === "overview" ? "bg-[color:var(--accent)] text-black" : "hover:bg-zinc-800"}`}>Overview</button>
               <button onClick={() => setActiveTab("draws")} className={`w-full text-left px-3 py-2 rounded ${activeTab === "draws" ? "bg-[color:var(--accent)] text-black" : "hover:bg-zinc-800"}`}>Draws</button>
-              <button onClick={() => setActiveTab("tickets")} className={`w-full text-left px-3 py-2 rounded ${activeTab === "tickets" ? "bg-[color:var(--accent)] text-black" : "hover:bg-zinc-800"}`}>Tickets</button>
+              <button onClick={() => { setActiveTab("tickets"); setTicketStatusFilter('all'); }} className={`w-full text-left px-3 py-2 rounded ${activeTab === "tickets" && ticketStatusFilter === 'all' ? "bg-[color:var(--accent)] text-black" : "hover:bg-zinc-800"}`}>Tickets</button>
+              <button onClick={() => { setActiveTab("tickets"); setTicketStatusFilter('paid'); }} className={`w-full text-left px-3 py-2 rounded ${activeTab === "tickets" && ticketStatusFilter === 'paid' ? "bg-[color:var(--accent)] text-black" : "hover:bg-zinc-800"}`}>Paid</button>
+              <button onClick={() => { setActiveTab("tickets"); setTicketStatusFilter('unpaid'); }} className={`w-full text-left px-3 py-2 rounded ${activeTab === "tickets" && ticketStatusFilter === 'unpaid' ? "bg-[color:var(--accent)] text-black" : "hover:bg-zinc-800"}`}>Unpaid</button>
               <button onClick={() => setActiveTab("messages")} className={`w-full text-left px-3 py-2 rounded ${activeTab === "messages" ? "bg-[color:var(--accent)] text-black" : "hover:bg-zinc-800"}`}>Messages</button>
             </nav>
 
@@ -296,7 +306,13 @@ export default function AdminPanel() {
                       <input type="time" value={ticketEndTime} onChange={e => setTicketEndTime(e.target.value)} className="px-2 py-1 rounded bg-black/20 border border-zinc-800 text-sm" />
                     </label>
 
-                    <button onClick={() => { setTicketDateFilter(""); setTicketStartTime(""); setTicketEndTime(""); setTicketSearch(""); }} title="Clear filters" className="px-2 py-1 rounded border text-sm" style={{ borderColor: "var(--accent)", color: "var(--accent)" }}>Clear</button>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => { setTicketStatusFilter('all'); }} title="Show all" className={`px-2 py-1 rounded text-sm ${ticketStatusFilter === 'all' ? 'bg-[color:var(--accent)] text-black' : 'border'}`} style={{ borderColor: "var(--accent)" }}>All</button>
+                      <button onClick={() => { setTicketStatusFilter('paid'); }} title="Show paid" className={`px-2 py-1 rounded text-sm ${ticketStatusFilter === 'paid' ? 'bg-emerald-500 text-black' : 'border'}`} style={{ borderColor: "var(--accent)" }}>Paid</button>
+                      <button onClick={() => { setTicketStatusFilter('unpaid'); }} title="Show unpaid" className={`px-2 py-1 rounded text-sm ${ticketStatusFilter === 'unpaid' ? 'bg-zinc-700 text-white' : 'border'}`} style={{ borderColor: "var(--accent)" }}>Unpaid</button>
+                    </div>
+
+                    <button onClick={() => { setTicketDateFilter(""); setTicketStartTime(""); setTicketEndTime(""); setTicketSearch(""); setTicketStatusFilter('all'); }} title="Clear filters" className="px-2 py-1 rounded border text-sm" style={{ borderColor: "var(--accent)", color: "var(--accent)" }}>Clear</button>
 
                     <button onClick={() => downloadCSV(filteredTickets, "filtered-tickets")} className="px-3 py-2 rounded border" style={{ borderColor: "var(--accent)", color: "var(--accent)" }}>Export</button>
                   </div>

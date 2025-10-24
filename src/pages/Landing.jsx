@@ -18,13 +18,31 @@ export default function Landing() {
     navigate("/home");
   }
 
+  function openUPIAmount(amount = 999) {
+    try {
+      const upiId = '73967611111@ybl';
+      const pn = encodeURIComponent('ANM Real Estate');
+      const tn = encodeURIComponent('Ticket Payment');
+      const am = encodeURIComponent(String(amount));
+      const phonepeIntent = `phonepe://pay?pa=${upiId}&pn=${pn}&am=${am}&tn=${tn}&cu=INR`;
+      const upiIntent = `upi://pay?pa=${upiId}&pn=${pn}&am=${am}&tn=${tn}&cu=INR`;
+      window.location.href = phonepeIntent;
+      setTimeout(() => { window.location.href = upiIntent; }, 800);
+    } catch (e) {
+      const upi = `upi://pay?pa=73967611111@ybl&pn=ANM%20Real%20Estate&am=${amount}&tn=Ticket%20Payment&cu=INR`;
+      window.location.href = upi;
+    }
+  }
+
   return (
     <div className="min-h-screen bg-black text-gray-100 relative overflow-hidden">
       {/* Full-screen intro overlay */}
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
         <button onClick={skip} className="absolute inset-0" aria-label="Skip intro" />
         <div className="text-center">
-          <div className="mx-auto w-36 h-36 rounded-full bg-amber-300 flex items-center justify-center text-black font-bold text-2xl logo-anim">ANM</div>
+          <div className="mx-auto w-36 h-36 rounded-full bg-amber-300 flex items-center justify-center logo-anim">
+            <img src="/assets/anm-logo.png" alt="ANM" className="w-28 h-28 object-contain" onError={(e)=>{e.target.style.display='none'}} />
+          </div>
           <div className="mt-6 text-xl text-zinc-300 tagline-anim">ANM Real Estate — Grand Land Draw</div>
           <div className="mt-3 text-sm text-zinc-400">Draw on 31 Dec 2025 — Book your ticket now</div>
         </div>
@@ -35,11 +53,13 @@ export default function Landing() {
         <header className="py-6">
           <div className="container mx-auto px-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-amber-300 rounded flex items-center justify-center font-bold text-black">ANM</div>
+              <div className="w-10 h-10 bg-amber-300 rounded flex items-center justify-center">
+                <img src="/assets/anm-logo.png" alt="ANM" className="w-8 h-8 object-contain" onError={(e)=>{e.target.style.display='none'}} />
+              </div>
               <div className="font-semibold" style={{ color: "var(--accent)" }}>ANM RealEstate</div>
             </div>
             <nav>
-              <Link to="/draw" className="px-3 py-2 rounded bg-amber-300 text-black font-semibold">Book Ticket</Link>
+              <button onClick={() => openUPIAmount(999)} className="px-3 py-2 rounded bg-amber-300 text-black font-semibold">Book Ticket</button>
             </nav>
           </div>
         </header>

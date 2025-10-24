@@ -40,6 +40,9 @@ export default function About() {
               <div className="text-lg font-semibold" style={{ color: "var(--accent)" }}>December 31, 2025</div>
               <div className="text-sm text-zinc-400 mt-2">Location</div>
               <div className="text-sm">Akashalokoram, Mula Peta, Srikakulam, Andhra Pradesh</div>
+              <div className="mt-3">
+                <a href="https://maps.app.goo.gl/BTVgAJMmcwVDxGNw5?g_st=aw" target="_blank" rel="noreferrer" className="inline-block px-3 py-2 rounded text-sm font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>View on Map</a>
+              </div>
             </div>
           </div>
         </section>
@@ -98,14 +101,25 @@ export default function About() {
             <h3 className="text-xl font-semibold">MAP & CONNECTIVITY</h3>
             <p className="mt-3 text-gray-300">Akashalokoram is strategically positioned with planned connectivity to the new port site and major highways.</p>
 
-            <div className="mt-4 rounded overflow-hidden border border-zinc-800">
-              <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=60" alt="map" className="w-full h-40 object-cover"/>
-              <div className="p-4 bg-zinc-900">
-                <div className="text-sm text-zinc-400">Site</div>
-                <div className="font-semibold" style={{ color: "var(--accent)" }}>Akashalokoram, Mula Peta</div>
-                <div className="text-sm mt-2 text-zinc-400">Proposed connection to Mula Peta Port • Easy access to regional infrastructure</div>
+              <div className="mt-4 rounded overflow-hidden border border-zinc-800">
+                <div style={{ position: 'relative', paddingBottom: '45%', height: 0 }}>
+                  <iframe
+                    title="Akashalokoram Map - 18.525049,84.264575"
+                    src="https://www.google.com/maps?q=18.525049,84.264575&z=17&output=embed"
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+                <div className="p-4 bg-zinc-900">
+                  <div className="text-sm text-zinc-400">Site</div>
+                  <div className="font-semibold" style={{ color: "var(--accent)" }}>Akashalokoram Gramam, Mulapeta</div>
+                  <div className="text-sm mt-2 text-zinc-400">Santhabommali, Srikakulam, Andhra Pradesh • Proposed connection to Mula Peta Port</div>
+                  <div className="mt-3">
+                    <a href="https://maps.app.goo.gl/BTVgAJMmcwVDxGNw5?g_st=aw" target="_blank" rel="noreferrer" className="inline-block px-3 py-2 rounded text-sm font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }} aria-label="Open Akashalokoram in Google Maps">Open in Google Maps (18.525049, 84.264575)</a>
+                  </div>
+                </div>
               </div>
-            </div>
           </div>
         </section>
 

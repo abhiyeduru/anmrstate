@@ -94,7 +94,7 @@ export async function createTicket(drawId, user) {
     tx.set(ticketRef, {
       drawId,
       name: user.name,
-      adhar: user.adhar || user.email || null,
+  adhar: user.adhar || null,
       phone: user.phone,
       userId: user.userId || null,
       ticketNumber,

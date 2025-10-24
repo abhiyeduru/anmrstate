@@ -21,6 +21,7 @@ export default function Header() {
           <NavLink to="/" className={({isActive}) => `text-sm ${isActive ? "text-[color:var(--accent)]" : "text-zinc-300 hover:text-[color:var(--accent)]"}`}>Home</NavLink>
           <NavLink to="/about" className={({isActive}) => `text-sm ${isActive ? "text-[color:var(--accent)]" : "text-zinc-300 hover:text-[color:var(--accent)]"}`}>About</NavLink>
           <NavLink to="/draw" className={({isActive}) => `text-sm ${isActive ? "text-[color:var(--accent)]" : "text-zinc-300 hover:text-[color:var(--accent)]"}`}>Draw</NavLink>
+          <NavLink to="/prizes" className={({isActive}) => `text-sm ${isActive ? "text-[color:var(--accent)]" : "text-zinc-300 hover:text-[color:var(--accent)]"}`}>Prizes</NavLink>
           <NavLink to="/gallery" className={({isActive}) => `text-sm ${isActive ? "text-[color:var(--accent)]" : "text-zinc-300 hover:text-[color:var(--accent)]"}`}>Gallery</NavLink>
           <NavLink to="/contact" className={({isActive}) => `text-sm ${isActive ? "text-[color:var(--accent)]" : "text-zinc-300 hover:text-[color:var(--accent)]"}`}>Contact</NavLink>
         </nav>
@@ -50,6 +51,7 @@ export default function Header() {
             <NavLink onClick={() => setOpen(false)} to="/" className={({isActive}) => `text-sm ${isActive ? "text-[color:var(--accent)]" : "text-zinc-300 hover:text-[color:var(--accent)]"}`}>Home</NavLink>
             <NavLink onClick={() => setOpen(false)} to="/about" className={({isActive}) => `text-sm ${isActive ? "text-[color:var(--accent)]" : "text-zinc-300 hover:text-[color:var(--accent)]"}`}>About</NavLink>
             <NavLink onClick={() => setOpen(false)} to="/draw" className={({isActive}) => `text-sm ${isActive ? "text-[color:var(--accent)]" : "text-zinc-300 hover:text-[color:var(--accent)]"}`}>Draw</NavLink>
+            <NavLink onClick={() => setOpen(false)} to="/prizes" className={({isActive}) => `text-sm ${isActive ? "text-[color:var(--accent)]" : "text-zinc-300 hover:text-[color:var(--accent)]"}`}>Prizes</NavLink>
             <NavLink onClick={() => setOpen(false)} to="/gallery" className={({isActive}) => `text-sm ${isActive ? "text-[color:var(--accent)]" : "text-zinc-300 hover:text-[color:var(--accent)]"}`}>Gallery</NavLink>
             <NavLink onClick={() => setOpen(false)} to="/contact" className={({isActive}) => `text-sm ${isActive ? "text-[color:var(--accent)]" : "text-zinc-300 hover:text-[color:var(--accent)]"}`}>Contact</NavLink>
             <Link to="/admin/login" onClick={() => setOpen(false)} className="mt-2 px-3 py-2 rounded-full border text-center" style={{ borderColor: "var(--accent)", color: "var(--accent)" }}>Admin</Link>
