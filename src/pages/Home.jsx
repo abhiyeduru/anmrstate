@@ -70,7 +70,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex-shrink-0">
-                <button onClick={() => openUPIAmount(999)} className="px-4 py-2 rounded font-semibold bg-black text-amber-300">Book Ticket Now</button>
+                <Link to="/draw" className="px-4 py-2 rounded font-semibold bg-black text-amber-300">Book Ticket Now</Link>
               </div>
             </div>
           </div>
@@ -88,9 +88,9 @@ export default function Home() {
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <button onClick={() => openUPIAmount(999)} className="px-6 py-3 rounded font-semibold shadow" style={{ backgroundColor: "var(--accent)", color: "#000" }}>
+              <Link to="/draw" className="px-6 py-3 rounded font-semibold shadow" style={{ backgroundColor: "var(--accent)", color: "#000" }}>
                 ENTER THE DRAW NOW
-              </button>
+              </Link>
               <Link to="/draw" className="px-5 py-3 rounded border border-zinc-700 text-zinc-300">View Draw Details</Link>
                 <a href="https://maps.app.goo.gl/BTVgAJMmcwVDxGNw5?g_st=aw" target="_blank" rel="noreferrer" className="px-5 py-3 rounded border border-zinc-700 text-zinc-300">View on Map</a>
             </div>
@@ -142,21 +142,21 @@ export default function Home() {
               <h4 className="font-semibold text-white">Why Participate?</h4>
               <p className="text-sm text-zinc-400 mt-2">Low ticket price, high-value rewards, and verified transparency at every step.</p>
               <div className="mt-3">
-                <button onClick={() => openUPIAmount(999)} className="px-3 py-2 rounded text-sm font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</button>
+                <Link to="/draw" className="px-3 py-2 rounded text-sm font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</Link>
               </div>
             </div>
             <div className="p-4 rounded border border-zinc-800 bg-black/30">
               <h4 className="font-semibold text-white">How It Works</h4>
               <p className="text-sm text-zinc-400 mt-2">Register → Book → Get a unique ticket number → Winners announced publicly.</p>
               <div className="mt-3">
-                <button onClick={() => openUPIAmount(999)} className="px-3 py-2 rounded text-sm font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</button>
+                <Link to="/draw" className="px-3 py-2 rounded text-sm font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</Link>
               </div>
             </div>
             <div className="p-4 rounded border border-zinc-800 bg-black/30">
               <h4 className="font-semibold text-white">Future Scope</h4>
               <p className="text-sm text-zinc-400 mt-2">Located near the proposed Mula Peta Port — a prime site for growth and appreciation.</p>
               <div className="mt-3">
-                <button onClick={() => openUPIAmount(999)} className="px-3 py-2 rounded text-sm font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</button>
+                <Link to="/draw" className="px-3 py-2 rounded text-sm font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</Link>
               </div>
             </div>
           </div>
@@ -167,7 +167,7 @@ export default function Home() {
           <h3 className="text-2xl font-bold" style={{ color: "var(--accent)" }}>Masterplan Preview</h3>
           <p className="text-sm text-zinc-400 mt-2">Hover any plot to preview details. Click Book to participate in the draw.</p>
 
-          <div className="mt-6 grid grid-cols-3 md:grid-cols-6 gap-3">
+                  <div className="mt-6 grid grid-cols-3 md:grid-cols-6 gap-3">
             {plots.map((p) => (
               <div
                 key={p.id}
@@ -179,7 +179,7 @@ export default function Home() {
                 <div className="text-sm font-mono text-zinc-100">{p.id}</div>
                 <div className="text-xs text-zinc-400 mt-1">₹{p.price.toLocaleString()}</div>
                 <div className="mt-3">
-                  <button onClick={() => openUPIAmount(999)} className="inline-block px-3 py-1 rounded text-xs font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</button>
+                  <Link to="/draw" className="inline-block px-3 py-1 rounded text-xs font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</Link>
                 </div>
               </div>
             ))}
@@ -190,7 +190,7 @@ export default function Home() {
               <div className="font-semibold" style={{ color: "var(--accent)" }}>Plot {hoverPlot.id}</div>
               <div className="text-sm text-zinc-400">Estimated price: ₹{hoverPlot.price.toLocaleString()} • Prime location • Planned connectivity to Mula Peta Port</div>
               <div className="mt-3">
-                <button onClick={() => openUPIAmount(999)} className="px-4 py-2 rounded font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book This Plot</button>
+                <Link to="/draw" className="px-4 py-2 rounded font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book This Plot</Link>
               </div>
             </div>
           )}
@@ -285,7 +285,7 @@ export default function Home() {
 
       {/* Floating Book Now button (bottom-right) */}
       <div className="fixed right-4 bottom-6 z-50">
-  <button onClick={() => openUPIAmount(999)} className="px-4 py-3 rounded-full shadow-lg" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</button>
+        <Link to="/draw" className="px-4 py-3 rounded-full shadow-lg" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</Link>
       </div>
     </div>
   );
