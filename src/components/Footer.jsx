@@ -5,12 +5,12 @@ export default function Footer() {
     <footer className="bg-zinc-900 border-t border-zinc-800 mt-8">
       <div className="container mx-auto px-4 py-6 text-center text-sm text-zinc-400">
         <div className="mb-2 flex items-center justify-center gap-4">
-          <img src="/assets/anm-logo.png" alt="ANM Real Estate" className="h-12 object-contain" onError={(e)=>{e.target.style.display='none'}} />
+          <img src="/assets/anm-logo.svg" alt="ANM Real Estate" className="h-12 object-contain" onError={(e)=>{e.target.style.display='none'}} />
         </div>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm">
           <div className="text-left">
             <div className="font-semibold text-white">Founder</div>
-            <div className="text-xs text-zinc-400">Chiranjeevi Reddy Yeduru • <a href="tel:+917296761111" className="underline">+91 72967 61111</a></div>
+            <div className="text-xs text-zinc-400">Chiranjeevi Reddy Yeduru • <a href="tel:+917396761111" className="underline">+91 73967 61111</a></div>
           </div>
 
           <div className="text-left">

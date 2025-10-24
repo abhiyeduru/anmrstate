@@ -7,8 +7,8 @@ const maybeProcessEnv = (typeof process !== 'undefined' && process.env) ? proces
 const UPI_ID = maybeProcessEnv.REACT_APP_UPI_ID || maybeProcessEnv.VITE_UPI_ID || "73967611111@ybl";
 // Path where QR image should be placed (public folder): /assets/upi-qr.png
 const UPI_QR_PATH = "/assets/upi-qr.png";
-// Path where final logo should be placed (public folder): /assets/anm-logo.png
-const ANM_LOGO_PATH = "/assets/anm-logo.png";
+// Paths where final logo may be placed (public folder). Prefer PNG but fall back to SVG.
+const ANM_LOGO_PATHS = ["/assets/anm-logo.png", "/assets/anm-logo.svg"];
 // Direct PhonePe number (user requested)
 const PHONEPE_NUMBER = "7396761111";
 
@@ -47,14 +47,51 @@ export default function TicketModal({ ticket, onClose }) {
 				}));
 		}
 
-		// try to embed logo in header (from public assets)
+		// try to embed logo in header (from public assets) - try multiple possible paths
 		try {
-			const logoData = await fetchImageAsDataURL(ANM_LOGO_PATH);
-			// determine image format from data URL
-			const mimeMatch = /^data:(image\/[^;]+);base64,/.exec(logoData);
-			const format = mimeMatch ? mimeMatch[1].split('/')[1].toUpperCase() : 'PNG';
-			// add image at top-left of header
-			try { doc.addImage(logoData, format, 46, 46, 60, 60); } catch (e) { console.warn('Failed to add logo to PDF', e); }
+			async function fetchFirstExistingDataURL(paths) {
+				for (const p of paths) {
+					try {
+						const data = await fetchImageAsDataURL(p);
+						return { data, path: p };
+					} catch (err) {
+						// try next
+					}
+				}
+				throw new Error('No logo found');
+			}
+
+			const found = await fetchFirstExistingDataURL(ANM_LOGO_PATHS);
+			const logoData = found.data;
+			// determine image format from data URL (PNG/JPEG/SVG)
+			const mimeMatch = /^data:(image\/[^;]+);/.exec(logoData);
+			let format = mimeMatch ? mimeMatch[1].split('/')[1].toUpperCase() : 'PNG';
+			// jsPDF can't add SVG data URLs directly; if the found file is SVG, use PNG fallback by rendering it via an <img> canvas conversion.
+			if (format === 'SVG+XML' || format === 'SVG') {
+				// convert SVG dataURL to PNG via an offscreen canvas
+				try {
+					const img = new Image();
+					img.src = logoData;
+					await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+					const canvas = document.createElement('canvas');
+					canvas.width = img.naturalWidth || 600;
+					canvas.height = img.naturalHeight || 200;
+					const ctx = canvas.getContext('2d');
+					// fill background black (match site) to preserve look
+					ctx.fillStyle = '#000';
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
+					ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+					const pngData = canvas.toDataURL('image/png');
+					try { doc.addImage(pngData, 'PNG', 46, 46, 60, 60); } catch (e) { console.warn('Failed to add converted SVG logo to PDF', e); }
+				} catch (e) {
+					console.warn('SVG to PNG conversion failed', e);
+					doc.setFontSize(22);
+					doc.setTextColor(0, 0, 0);
+					doc.text("ANM Real Estate", 120, 90);
+				}
+			} else {
+				try { doc.addImage(logoData, format, 46, 46, 60, 60); } catch (e) { console.warn('Failed to add logo to PDF', e); }
+			}
 		} catch (e) {
 			// fallback to text title if logo missing
 			doc.setFontSize(22);
