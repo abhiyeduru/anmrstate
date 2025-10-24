@@ -99,6 +99,18 @@ export default function TicketModal({ ticket, onClose }) {
 			doc.text("ANM Real Estate", 120, 90);
 		}
 
+		// Always show company name in header near the logo (helps when logo is present)
+		try {
+			doc.setFontSize(18);
+			doc.setFont(undefined, "bold");
+			doc.setTextColor(0, 0, 0);
+			// position name slightly right of the logo area
+			doc.text("ANM Real Estate", 120, 78);
+		} catch (err) {
+			// non-fatal - continue if text drawing fails
+			console.warn('Failed to draw company name in PDF header', err);
+		}
+
 		// Ticket Title
 		doc.setFontSize(14);
 		doc.setTextColor(...gold);
