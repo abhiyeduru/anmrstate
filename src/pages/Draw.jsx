@@ -122,6 +122,24 @@ export default function Draw() {
     try { return new Date(createdAt).toLocaleString(); } catch (e) { return String(createdAt); }
   }
 
+  // Opens PhonePe (or UPI) intent with a preset amount (₹999) to simplify quick payments
+  function openPhonePeAmount(amount = 999) {
+    try {
+      const upiId = '7396761111-5@axl';
+      const pn = encodeURIComponent('ANM Real Estate');
+      const tn = encodeURIComponent('Ticket Payment');
+      const am = encodeURIComponent(String(amount));
+      const phonepeIntent = `phonepe://pay?pa=${upiId}&pn=${pn}&am=${am}&tn=${tn}&cu=INR`;
+      const upiIntent = `upi://pay?pa=${upiId}&pn=${pn}&am=${am}&tn=${tn}&cu=INR`;
+      // Try to open PhonePe app first; fallback to generic UPI after a short delay.
+      window.location.href = phonepeIntent;
+      setTimeout(() => { window.location.href = upiIntent; }, 800);
+    } catch (err) {
+      const upi = `upi://pay?pa=7396761111-5@axl&pn=ANM%20Real%20Estate&am=${amount}&tn=Ticket%20Payment&cu=INR`;
+      window.location.href = upi;
+    }
+  }
+
   return (
     <div className="min-h-screen bg-black text-gray-100 overflow-x-hidden">
   {/* add extra bottom padding so sticky CTA doesn't cover content on mobile */}
@@ -163,6 +181,34 @@ export default function Draw() {
                 >
                   BOOK YOUR TICKET NOW
                 </button>
+                <div className="hidden sm:inline-block ml-2">
+                  <button
+                    onClick={() => {
+                      // open PhonePe UPI intent with amount ₹999
+                      try {
+                        const upiId = '7396761111-5@axl';
+                        const pn = encodeURIComponent('ANM Real Estate');
+                        const tn = encodeURIComponent('Ticket Payment');
+                        const am = encodeURIComponent('999');
+                        const phonepeIntent = `phonepe://pay?pa=${upiId}&pn=${pn}&am=${am}&tn=${tn}&cu=INR`;
+                        const upiIntent = `upi://pay?pa=${upiId}&pn=${pn}&am=${am}&tn=${tn}&cu=INR`;
+                        // Try PhonePe app first; if it fails, fallback to generic UPI intent
+                        window.location.href = phonepeIntent;
+                        setTimeout(() => {
+                          window.location.href = upiIntent;
+                        }, 800);
+                      } catch (err) {
+                        // fallback
+                        const upi = `upi://pay?pa=7396761111-5@axl&pn=ANM%20Real%20Estate&am=999&tn=Ticket%20Payment&cu=INR`;
+                        window.location.href = upi;
+                      }
+                    }}
+                    className="ml-2 px-4 py-2 rounded font-medium border text-sm"
+                    style={{ borderColor: 'var(--accent)', color: 'var(--accent)' }}
+                  >
+                    Pay ₹999 (PhonePe)
+                  </button>
+                </div>
               </div>
               {/* on very small screens, use the sticky CTA instead */}
             </div>
@@ -323,6 +369,19 @@ export default function Draw() {
             >
               <span className="text-sm">BOOK NOW</span>
               <span className="text-sm font-mono">{draw?.ticketPrice ? `₹${draw.ticketPrice}` : 'Free'}</span>
+            </button>
+          </div>
+        </div>
+        {/* small PhonePe quick-pay on mobile (below sticky CTA) */}
+        <div className="lg:hidden fixed inset-x-0 bottom-20 px-4 z-40">
+          <div className="max-w-3xl mx-auto">
+            <button
+              onClick={() => openPhonePeAmount(999)}
+              className="w-full py-3 rounded-xl font-semibold shadow-lg flex items-center justify-center gap-3"
+              style={{ border: '2px solid rgba(212,175,55,0.9)', background: 'transparent', color: 'rgba(212,175,55,1)' }}
+              aria-label="Pay ₹999 via PhonePe"
+            >
+              <span className="text-sm">Pay ₹999 via PhonePe</span>
             </button>
           </div>
         </div>

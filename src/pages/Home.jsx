@@ -123,14 +123,23 @@ export default function Home() {
             <div className="p-4 rounded border border-zinc-800 bg-black/30">
               <h4 className="font-semibold text-white">Why Participate?</h4>
               <p className="text-sm text-zinc-400 mt-2">Low ticket price, high-value rewards, and verified transparency at every step.</p>
+              <div className="mt-3">
+                <Link to="/draw" className="px-3 py-2 rounded text-sm font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</Link>
+              </div>
             </div>
             <div className="p-4 rounded border border-zinc-800 bg-black/30">
               <h4 className="font-semibold text-white">How It Works</h4>
               <p className="text-sm text-zinc-400 mt-2">Register → Book → Get a unique ticket number → Winners announced publicly.</p>
+              <div className="mt-3">
+                <Link to="/draw" className="px-3 py-2 rounded text-sm font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</Link>
+              </div>
             </div>
             <div className="p-4 rounded border border-zinc-800 bg-black/30">
               <h4 className="font-semibold text-white">Future Scope</h4>
               <p className="text-sm text-zinc-400 mt-2">Located near the proposed Mula Peta Port — a prime site for growth and appreciation.</p>
+              <div className="mt-3">
+                <Link to="/draw" className="px-3 py-2 rounded text-sm font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</Link>
+              </div>
             </div>
           </div>
         </section>
@@ -151,6 +160,9 @@ export default function Home() {
               >
                 <div className="text-sm font-mono text-zinc-100">{p.id}</div>
                 <div className="text-xs text-zinc-400 mt-1">₹{p.price.toLocaleString()}</div>
+                <div className="mt-3">
+                  <Link to="/draw" className="inline-block px-3 py-1 rounded text-xs font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</Link>
+                </div>
               </div>
             ))}
           </div>
@@ -159,6 +171,9 @@ export default function Home() {
             <div className="mt-4 p-4 bg-zinc-800 rounded border border-zinc-700">
               <div className="font-semibold" style={{ color: "var(--accent)" }}>Plot {hoverPlot.id}</div>
               <div className="text-sm text-zinc-400">Estimated price: ₹{hoverPlot.price.toLocaleString()} • Prime location • Planned connectivity to Mula Peta Port</div>
+              <div className="mt-3">
+                <Link to="/draw" className="px-4 py-2 rounded font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book This Plot</Link>
+              </div>
             </div>
           )}
         </section>
@@ -185,6 +200,11 @@ export default function Home() {
             <Link to="/signup" className="px-5 py-3 rounded font-semibold" style={{ backgroundColor: "var(--accent)", color: "#000" }}>SECURE MY SPOT NOW</Link>
           </div>
         </section>
+      </div>
+
+      {/* Floating Book Now button (bottom-right) */}
+      <div className="fixed right-4 bottom-6 z-50">
+        <Link to="/draw" className="px-4 py-3 rounded-full shadow-lg" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Book Now</Link>
       </div>
     </div>
   );
