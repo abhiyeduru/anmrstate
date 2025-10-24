@@ -136,6 +136,17 @@ export async function markWinner(drawId, ticketId) {
   await updateDoc(drawRef, { status: "closed", winnerTicketId: ticketId });
 }
 
+export async function updateTicketPayment(ticketId, paid = true) {
+  if (!ticketId) throw new Error("ticketId required");
+  const ticketRef = doc(db, "tickets", ticketId);
+  if (paid) {
+    await updateDoc(ticketRef, { paid: true, paidAt: serverTimestamp() });
+  } else {
+    // set paid false and clear paidAt (set to null)
+    await updateDoc(ticketRef, { paid: false, paidAt: null });
+  }
+}
+
 export async function saveContact(contact) {
   const col = collection(db, "contacts");
   await addDoc(col, { ...contact, createdAt: serverTimestamp() });

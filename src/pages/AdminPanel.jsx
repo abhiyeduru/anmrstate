@@ -19,10 +19,14 @@ export default function AdminPanel() {
   const [creating, setCreating] = useState({ title: "", prize: "", date: "", ticketPrice: "", totalTickets: "" });
   const [loading, setLoading] = useState(true);
   const [deletingTicketId, setDeletingTicketId] = useState(null);
+  const [paidChangingId, setPaidChangingId] = useState(null);
 
   // UI state
   const [activeTab, setActiveTab] = useState("overview"); // overview | draws | tickets | messages
   const [ticketSearch, setTicketSearch] = useState("");
+  const [ticketDateFilter, setTicketDateFilter] = useState(""); // yyyy-mm-dd
+  const [ticketStartTime, setTicketStartTime] = useState(""); // HH:MM
+  const [ticketEndTime, setTicketEndTime] = useState(""); // HH:MM
 
   async function load() {
     setLoading(true);
@@ -114,9 +118,42 @@ export default function AdminPanel() {
   }
 
   const filteredTickets = (activeTab === "tickets" ? allTickets : tickets).filter(t => {
-    if (!ticketSearch) return true;
-    const s = ticketSearch.toLowerCase();
-    return (t.name || "").toLowerCase().includes(s) || (t.adhar || "").toLowerCase().includes(s) || (t.ticketNumber || "").toLowerCase().includes(s);
+    // search filter
+    if (ticketSearch) {
+      const s = ticketSearch.toLowerCase();
+      const match = (t.name || "").toLowerCase().includes(s) || (t.adhar || "").toLowerCase().includes(s) || (String(t.ticketNumber || "")).toLowerCase().includes(s);
+      if (!match) return false;
+    }
+
+    // date filter (local date comparison)
+    if (ticketDateFilter) {
+      if (!t.createdAt) return false;
+      const d = new Date(t.createdAt.seconds * 1000);
+      const localY = d.getFullYear();
+      const localM = String(d.getMonth() + 1).padStart(2, '0');
+      const localD = String(d.getDate()).padStart(2, '0');
+      const localDateStr = `${localY}-${localM}-${localD}`;
+      if (localDateStr !== ticketDateFilter) return false;
+    }
+
+    // time range filter (based on local time)
+    if (ticketStartTime || ticketEndTime) {
+      if (!t.createdAt) return false;
+      const d = new Date(t.createdAt.seconds * 1000);
+      const minutes = d.getHours() * 60 + d.getMinutes();
+      if (ticketStartTime) {
+        const [sh, sm] = ticketStartTime.split(':').map(n => parseInt(n, 10));
+        const startMin = (isNaN(sh) ? 0 : sh * 60) + (isNaN(sm) ? 0 : sm);
+        if (minutes < startMin) return false;
+      }
+      if (ticketEndTime) {
+        const [eh, em] = ticketEndTime.split(':').map(n => parseInt(n, 10));
+        const endMin = (isNaN(eh) ? 24 * 60 : eh * 60) + (isNaN(em) ? 0 : em);
+        if (minutes > endMin) return false;
+      }
+    }
+
+    return true;
   });
 
   return (
@@ -241,8 +278,26 @@ export default function AdminPanel() {
               <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xl font-semibold" style={{ color: "var(--accent)" }}>Tickets</h3>
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-3">
                     <input placeholder="Search name, Aadhaar, ticket" value={ticketSearch} onChange={e => setTicketSearch(e.target.value)} className="px-3 py-2 rounded bg-black/20 border border-zinc-800 text-sm" />
+
+                    <label className="text-xs text-zinc-400 flex items-center gap-2">
+                      <span className="sr-only">Filter date</span>
+                      <input type="date" value={ticketDateFilter} onChange={e => setTicketDateFilter(e.target.value)} className="px-2 py-1 rounded bg-black/20 border border-zinc-800 text-sm" />
+                    </label>
+
+                    <label className="text-xs text-zinc-400 flex items-center gap-2">
+                      <span className="sr-only">Start time</span>
+                      <input type="time" value={ticketStartTime} onChange={e => setTicketStartTime(e.target.value)} className="px-2 py-1 rounded bg-black/20 border border-zinc-800 text-sm" />
+                    </label>
+
+                    <label className="text-xs text-zinc-400 flex items-center gap-2">
+                      <span className="sr-only">End time</span>
+                      <input type="time" value={ticketEndTime} onChange={e => setTicketEndTime(e.target.value)} className="px-2 py-1 rounded bg-black/20 border border-zinc-800 text-sm" />
+                    </label>
+
+                    <button onClick={() => { setTicketDateFilter(""); setTicketStartTime(""); setTicketEndTime(""); setTicketSearch(""); }} title="Clear filters" className="px-2 py-1 rounded border text-sm" style={{ borderColor: "var(--accent)", color: "var(--accent)" }}>Clear</button>
+
                     <button onClick={() => downloadCSV(filteredTickets, "filtered-tickets")} className="px-3 py-2 rounded border" style={{ borderColor: "var(--accent)", color: "var(--accent)" }}>Export</button>
                   </div>
                 </div>
@@ -274,6 +329,26 @@ export default function AdminPanel() {
                           <td className="p-2">
                             <div className="flex items-center gap-2">
                               <button onClick={() => markWinner(t.drawId, t.id).then(load)} className="px-2 py-1 rounded text-xs bg-red-600 text-white">Mark Winner</button>
+
+                              <button disabled={paidChangingId === t.id} onClick={async () => {
+                                setPaidChangingId(t.id);
+                                try {
+                                  const svc = await import('../services/firestoreService');
+                                  if (svc && typeof svc.updateTicketPayment === 'function') {
+                                    await svc.updateTicketPayment(t.id, !(t.paid === true));
+                                    await load();
+                                  } else {
+                                    alert('Payment toggle not available');
+                                  }
+                                } catch (err) {
+                                  console.error('Toggle paid failed', err);
+                                  const msg = (err && err.message) ? err.message : String(err);
+                                  alert(`Failed to toggle payment: ${msg}`);
+                                } finally {
+                                  setPaidChangingId(null);
+                                }
+                              }} className={`px-2 py-1 rounded text-xs ${t.paid ? 'bg-emerald-600 text-black' : 'bg-zinc-700 text-white'}`}>{paidChangingId === t.id ? 'Updating…' : (t.paid ? 'Paid' : 'Unpaid')}</button>
+
                               <button disabled={deletingTicketId === t.id} onClick={async () => {
                                 const ok = window.confirm('Delete this ticket? This cannot be undone.');
                                 if (!ok) return;
