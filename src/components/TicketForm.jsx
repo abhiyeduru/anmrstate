@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { createTicket } from "../services/firestoreService";
 
 export default function TicketForm({ drawId, onBooked }) {
-  const [form, setForm] = useState({ name: "", adhar: "", phone: "" });
+  const [form, setForm] = useState({ name: "", adhar: "", phone: "", village: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -13,7 +13,7 @@ export default function TicketForm({ drawId, onBooked }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-    if (!form.name || !form.adhar || !form.phone) {
+    if (!form.name || !form.adhar || !form.phone || !form.village) {
       setError("All fields required");
       return;
     }
@@ -27,10 +27,11 @@ export default function TicketForm({ drawId, onBooked }) {
         name: form.name,
         adhar: form.adhar,
         phone: form.phone,
+        village: form.village,
         createdAt: new Date()
       };
       onBooked && onBooked(ticket);
-      setForm({ name: "", adhar: "", phone: "" });
+      setForm({ name: "", adhar: "", phone: "", village: "" });
     } catch (err) {
       console.error(err);
       setError(err.message || "Failed to book");
@@ -43,6 +44,7 @@ export default function TicketForm({ drawId, onBooked }) {
     <form onSubmit={handleSubmit} className="space-y-3 max-w-md">
   <input name="name" value={form.name} onChange={handleChange} placeholder="Full name" className="w-full p-2 border rounded bg-black/20" />
   <input name="adhar" value={form.adhar} onChange={handleChange} placeholder="Aadhaar number" className="w-full p-2 border rounded bg-black/20" />
+  <input name="village" value={form.village} onChange={handleChange} placeholder="Village" className="w-full p-2 border rounded bg-black/20" />
   <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" className="w-full p-2 border rounded bg-black/20" />
       {error && <div className="text-amber-300 text-sm">{error}</div>}
       <div>

@@ -96,6 +96,7 @@ export async function createTicket(drawId, user) {
       name: user.name,
   adhar: user.adhar || null,
       phone: user.phone,
+      village: user.village || null,
       userId: user.userId || null,
       ticketNumber,
       number: selected,

@@ -42,9 +42,12 @@ export default function Landing() {
         <div className="text-center">
           <div className="mx-auto w-36 h-36 rounded-full bg-amber-300 flex items-center justify-center logo-anim">
             {/* logo removed — previous logo will be added when provided */}
-            <div className="w-28 h-28 flex items-center justify-center text-black font-bold">ANM</div>
+            <div className="w-28 h-28 flex flex-col items-center justify-center text-black">
+              <div className="text-2xl font-bold">ANM</div>
+              <div className="text-xs font-semibold">Annamma Realestate</div>
+            </div>
           </div>
-          <div className="mt-6 text-xl text-zinc-300 tagline-anim">ANM Real Estate — Grand Land Draw</div>
+          <div className="mt-6 text-xl text-zinc-300 tagline-anim">ANM — Annamma Realestate — Grand Land Draw</div>
           <div className="mt-3 text-sm text-zinc-400">Draw on 31 Dec 2025 — Book your ticket now</div>
         </div>
       </div>
@@ -58,7 +61,10 @@ export default function Landing() {
                 {/* small logo removed; placeholder text used until previous logo is provided */}
                 <div className="w-8 h-8 flex items-center justify-center text-black font-semibold">ANM</div>
               </div>
-              <div className="font-semibold" style={{ color: "var(--accent)" }}>ANM RealEstate</div>
+              <div className="flex flex-col" style={{ color: "var(--accent)" }}>
+                <div className="font-semibold">ANM</div>
+                <div className="text-xs">Annamma Realestate</div>
+              </div>
             </div>
             <nav>
               <button onClick={() => openUPIAmount(999)} className="px-3 py-2 rounded bg-amber-300 text-black font-semibold">Book Ticket</button>

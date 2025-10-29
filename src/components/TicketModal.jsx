@@ -37,14 +37,25 @@ export default function TicketModal({ ticket, onClose }) {
 		doc.rect(40, 40, 515, 70, "F"); // gold header bar
 		// helper: fetch image as dataURL (used for logo and QR)
 		function fetchImageAsDataURL(url) {
+			// If the resource is an SVG, return an encoded text data URL instead of a base64 blob data URL.
+			// This often avoids "tainted canvas" issues when drawing into a canvas for conversion.
 			return fetch(url)
-				.then(r => { if (!r.ok) throw new Error('Image not found'); return r.blob(); })
-				.then(blob => new Promise((resolve, reject) => {
-					const reader = new FileReader();
-					reader.onloadend = () => resolve(reader.result);
-					reader.onerror = reject;
-					reader.readAsDataURL(blob);
-				}));
+				.then(r => { if (!r.ok) throw new Error('Image not found: ' + url); return r; })
+				.then(async (r) => {
+					const contentType = r.headers.get('content-type') || '';
+					if (contentType.includes('svg') || url.toLowerCase().endsWith('.svg')) {
+						const text = await r.text();
+						// encodeURIComponent keeps the svg safe for data URL usage
+						return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(text);
+					}
+					const blob = await r.blob();
+					return await new Promise((resolve, reject) => {
+						const reader = new FileReader();
+						reader.onloadend = () => resolve(reader.result);
+						reader.onerror = reject;
+						reader.readAsDataURL(blob);
+					});
+				});
 		}
 
 		// try to embed logo in header (from public assets) - try multiple possible paths
@@ -71,23 +82,42 @@ export default function TicketModal({ ticket, onClose }) {
 				// convert SVG dataURL to PNG via an offscreen canvas
 				try {
 					const img = new Image();
+					// allow drawing into canvas from data URL
+					img.crossOrigin = 'anonymous';
 					img.src = logoData;
-					await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+					await new Promise((res, rej) => { img.onload = res; img.onerror = (err) => rej(new Error('Image load error: ' + err)); });
+
+					// target size in PDF points
+					const targetW = 60;
+					const targetH = 60;
 					const canvas = document.createElement('canvas');
-					canvas.width = img.naturalWidth || 600;
-					canvas.height = img.naturalHeight || 200;
+					canvas.width = targetW;
+					canvas.height = targetH;
 					const ctx = canvas.getContext('2d');
-					// fill background black (match site) to preserve look
-					ctx.fillStyle = '#000';
-					ctx.fillRect(0, 0, canvas.width, canvas.height);
-					ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+					// preserve aspect ratio while fitting into target box
+					const iw = img.naturalWidth || targetW;
+					const ih = img.naturalHeight || targetH;
+					let drawW = targetW, drawH = targetH;
+					if (iw && ih) {
+						const ratio = Math.min(targetW / iw, targetH / ih);
+						drawW = iw * ratio;
+						drawH = ih * ratio;
+					}
+					const dx = (targetW - drawW) / 2;
+					const dy = (targetH - drawH) / 2;
+					ctx.drawImage(img, dx, dy, drawW, drawH);
+
 					const pngData = canvas.toDataURL('image/png');
-					try { doc.addImage(pngData, 'PNG', 46, 46, 60, 60); } catch (e) { console.warn('Failed to add converted SVG logo to PDF', e); }
+					try { doc.addImage(pngData, 'PNG', 46, 46, targetW, targetH); } catch (e) { console.warn('Failed to add converted SVG logo to PDF', e); }
 				} catch (e) {
 					console.warn('SVG to PNG conversion failed', e);
 					doc.setFontSize(22);
+					// Use an explicit font & bold style so the header is clearly bold in the PDF
+					try { doc.setFont("helvetica", "bold"); } catch (err) { /* ignore if font not available */ }
 					doc.setTextColor(0, 0, 0);
-					doc.text("ANM Real Estate", 120, 90);
+					doc.text("ANM Realestate", 120, 90);
 				}
 			} else {
 				try { doc.addImage(logoData, format, 46, 46, 60, 60); } catch (e) { console.warn('Failed to add logo to PDF', e); }
@@ -102,10 +132,11 @@ export default function TicketModal({ ticket, onClose }) {
 		// Always show company name in header near the logo (helps when logo is present)
 		try {
 			doc.setFontSize(18);
-			doc.setFont(undefined, "bold");
+			// Ensure bold header text (explicit font + bold style)
+			try { doc.setFont("helvetica", "bold"); } catch (e) { doc.setFont(undefined, "bold"); }
 			doc.setTextColor(0, 0, 0);
 			// position name slightly right of the logo area
-			doc.text("ANM Real Estate", 120, 78);
+			doc.text("ANM Realestate", 120, 78);
 		} catch (err) {
 			// non-fatal - continue if text drawing fails
 			console.warn('Failed to draw company name in PDF header', err);
@@ -143,6 +174,12 @@ export default function TicketModal({ ticket, onClose }) {
 		doc.text("Aadhaar:", leftX, y);
 		doc.setFont(undefined, "normal");
 		doc.text(ticket.adhar || "-", leftX + 120, y);
+		y += lineHeight;
+
+		doc.setFont(undefined, "bold");
+		doc.text("Village:", leftX, y);
+		doc.setFont(undefined, "normal");
+		doc.text(ticket.village || "-", leftX + 120, y);
 		y += lineHeight;
 
 		doc.setFont(undefined, "bold");
@@ -219,6 +256,7 @@ export default function TicketModal({ ticket, onClose }) {
 				<div className="mt-4 space-y-2 text-sm text-zinc-300">
 					<div><span className="text-zinc-400">Name:</span> {ticket.name || "-"}</div>
 					<div><span className="text-zinc-400">Aadhaar:</span> {ticket.adhar || "-"}</div>
+					<div><span className="text-zinc-400">Village:</span> {ticket.village || "-"}</div>
 					<div><span className="text-zinc-400">Mobile:</span> {ticket.phone || "-"}</div>
 					<div><span className="text-zinc-400">Booking Date & Time:</span> {ticket.createdAt ? formatDate(ticket.createdAt) : "-"}</div>
 					<div className="mt-2"><span className="text-zinc-400">Support:</span> <span style={{ color: "var(--accent)", fontWeight: 600 }}>7396761111</span></div>
