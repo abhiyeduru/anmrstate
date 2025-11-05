@@ -326,6 +326,7 @@ export default function AdminPanel() {
                         <th className="p-2">Name</th>
                         <th className="p-2">Aadhaar</th>
                         <th className="p-2">Phone</th>
+                        <th className="p-2">Village</th>
                         <th className="p-2">Draw</th>
                         <th className="p-2">Status</th>
                         <th className="p-2">Created At</th>
@@ -339,6 +340,7 @@ export default function AdminPanel() {
                           <td className="p-2">{t.name}</td>
                           <td className="p-2">{t.adhar || "-"}</td>
                           <td className="p-2">{t.phone}</td>
+                          <td className="p-2">{t.village || '-'}</td>
                           <td className="p-2">{drawMap[t.drawId] || t.drawId}</td>
                           <td className="p-2">{t.status}</td>
                           <td className="p-2 text-xs text-zinc-400">{t.createdAt ? new Date(t.createdAt.seconds * 1000).toLocaleString() : "-"}</td>
@@ -390,7 +392,7 @@ export default function AdminPanel() {
                           </td>
                         </tr>
                       ))}
-                      {!filteredTickets.length && <tr><td colSpan="8" className="p-4 text-xs text-zinc-400">No tickets found</td></tr>}
+                      {!filteredTickets.length && <tr><td colSpan="9" className="p-4 text-xs text-zinc-400">No tickets found</td></tr>}
                     </tbody>
                   </table>
                 </div>

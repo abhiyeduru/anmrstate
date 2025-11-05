@@ -155,12 +155,13 @@ export async function saveContact(contact) {
 
 export function exportTicketsToCSV(tickets) {
   if (!tickets || !tickets.length) return null;
-  const headers = ["Ticket Number", "Name", "Aadhaar", "Phone", "Status", "Created At"];
+  const headers = ["Ticket Number", "Name", "Aadhaar", "Phone", "Village", "Status", "Created At"];
   const rows = tickets.map(t => [
     t.ticketNumber,
     t.name,
     t.adhar || "",
     t.phone,
+    t.village || "",
     t.status || "",
     t.createdAt ? new Date(t.createdAt.seconds * 1000).toISOString() : ""
   ]);
