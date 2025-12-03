@@ -229,12 +229,6 @@ export default function Home() {
                 <div className="text-xs text-zinc-400">Founder</div>
                 <div className="mt-1"><a href="tel:+917296761111" className="underline">+91 72967 61111</a></div>
               </div>
-
-              <div className="mt-4 text-sm text-zinc-300">
-                <div className="font-medium text-white">Abhiram Yeduru</div>
-                <div className="text-xs text-zinc-400">Co-founder</div>
-                <div className="mt-1"><a href="tel:+919182146476" className="underline">+91 91821 46476</a></div>
-              </div>
             </div>
 
             <div className="md:col-span-2 p-4 rounded border border-zinc-800 bg-black/30">
