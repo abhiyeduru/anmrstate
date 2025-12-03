@@ -227,7 +227,7 @@ export default function Home() {
               <div className="mt-3 text-sm text-zinc-300">
                 <div className="font-medium text-white">Chiranjeevi Reddy Yeduru</div>
                 <div className="text-xs text-zinc-400">Founder</div>
-                <div className="mt-1"><a href="tel:+917296761111" className="underline">+91 72967 61111</a></div>
+                <div className="mt-1"><a href="tel:+917396761111" className="underline">+91 7396761111</a></div>
               </div>
             </div>
 
