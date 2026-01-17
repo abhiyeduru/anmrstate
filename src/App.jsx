@@ -1,85 +1,60 @@
-import React, { useEffect, Suspense, lazy } from "react";
-import { Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import ProtectedRoute from "./components/ProtectedRoute";
-
-// lazy-load pages to avoid top-level import-time failures
-const Home = lazy(() => import("./pages/Home"));
-const About = lazy(() => import("./pages/About"));
-const Draw = lazy(() => import("./pages/Draw"));
-const Gallery = lazy(() => import("./pages/Gallery"));
-const Contact = lazy(() => import("./pages/Contact"));
-const AdminLogin = lazy(() => import("./pages/AdminLogin"));
-const AdminPanel = lazy(() => import("./pages/AdminPanel"));
-const Landing = lazy(() => import("./pages/Landing"));
-const Prizes = lazy(() => import("./pages/Prizes"));
-
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-  componentDidCatch(error, info) {
-    console.error("Unhandled error caught by ErrorBoundary:", error, info);
-  }
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen bg-black text-gray-100 flex items-center justify-center p-6">
-          <div className="max-w-xl w-full bg-zinc-900 border border-red-600 rounded-lg p-6 text-center">
-            <h2 className="text-xl font-bold" style={{ color: "var(--accent)" }}>Something went wrong</h2>
-            <p className="mt-3 text-sm text-zinc-300">An unexpected error occurred while loading the app. Details are shown below.</p>
-            <pre className="mt-3 text-xs text-red-400 bg-black/20 p-3 rounded break-words">{String(this.state.error)}</pre>
-            <div className="mt-4 flex items-center justify-center gap-3">
-              <button onClick={() => window.location.reload()} className="px-4 py-2 rounded" style={{ backgroundColor: "var(--accent)", color: "#000" }}>Reload</button>
-              <button onClick={() => this.setState({ hasError: false, error: null })} className="px-4 py-2 rounded border" style={{ borderColor: "var(--accent)", color: "var(--accent)" }}>Dismiss</button>
-            </div>
-          </div>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
+import React from "react";
 
 export default function App() {
-  useEffect(() => {
-    console.log("App mounted — use npm start to run the dev server (start -> vite)");
-  }, []);
-
   return (
     <div
-      className="min-h-screen flex flex-col bg-black text-gray-100"
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900"
       style={{ ["--accent"]: "#D4AF37" }}
     >
-      <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <ErrorBoundary>
-          <Suspense fallback={<div className="text-center text-zinc-400">Loading...</div>}>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/landing" element={<Landing />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/draw" element={<Draw />} />
-              <Route path="/prizes" element={<Prizes />} />
-              <Route path="/gallery" element={<Gallery />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin" element={
-                <ProtectedRoute>
-                  <AdminPanel />
-                </ProtectedRoute>
-              } />
-            </Routes>
-          </Suspense>
-        </ErrorBoundary>
-      </main>
-      <Footer />
+      <div className="max-w-2xl w-full mx-auto px-6 py-12 text-center">
+        <div className="bg-zinc-900 border-2 rounded-2xl p-12 shadow-2xl" style={{ borderColor: "var(--accent)" }}>
+          {/* Maintenance Icon */}
+          <div className="mb-8 flex justify-center">
+            <svg 
+              className="w-24 h-24" 
+              style={{ color: "var(--accent)" }}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" 
+              />
+            </svg>
+          </div>
+
+          {/* Main Message */}
+          <h1 
+            className="text-4xl md:text-5xl font-bold mb-6"
+            style={{ color: "var(--accent)" }}
+          >
+            Under Maintenance
+          </h1>
+          
+          <p className="text-xl text-gray-300 mb-4">
+            The website is currently under maintenance
+          </p>
+          
+          <p className="text-base text-gray-400 mb-8">
+            We're working hard to improve your experience. Please check back soon.
+          </p>
+
+          {/* Decorative Line */}
+          <div className="flex items-center justify-center gap-3 mt-8">
+            <div className="h-px w-20 bg-gradient-to-r from-transparent" style={{ background: `linear-gradient(to right, transparent, var(--accent))` }}></div>
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "var(--accent)" }}></div>
+            <div className="h-px w-20" style={{ background: `linear-gradient(to left, transparent, var(--accent))` }}></div>
+          </div>
+
+          {/* Contact Info */}
+          <p className="text-sm text-gray-500 mt-8">
+            For urgent inquiries, please contact us directly
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
